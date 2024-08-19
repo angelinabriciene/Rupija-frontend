@@ -1,0 +1,10 @@
+#header {
+    font-weight: bold;
+    font-size: 50px;
+    font-style: italic;
+    text-align: center;
+}
+
+.nav-item {
+    margin-top: 20px;
+}
