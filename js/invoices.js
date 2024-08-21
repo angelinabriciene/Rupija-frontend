@@ -1,7 +1,7 @@
 fetchInvoices();
 
 if (window.location.href.includes("info=d")) {
-    showAlert(" Sąskaita atnaujinta");
+    showAlert(" Sąskaita išsaugota");
 }
 
 if (window.location.href.includes("info=u")) {
@@ -95,5 +95,43 @@ async function fetchInvoices() {
 
     } catch (error) {
         console.error('Error fetching invoices:', error);
+    }
+}
+
+async function deleteInvoice(invoiceId) {
+    const apiUrl = 'http://localhost:8090/api/saskaitos';
+    try {
+        await axios.delete(`${apiUrl}/${invoiceId}`);
+        window.location.href = "http://127.0.0.1:5500/views/invoices.html?info=u";
+    } catch (error) {
+        console.error('Error deleting invoice:', error);
+    }
+}
+
+async function updateInvoice(invoiceId) {
+    const apiUrl = 'http://localhost:8090/api/saskaitos';
+    const invoiceTypeId = document.getElementById(`invoiceTypeIdEdit-${invoiceId}`).value;
+    const invoiceNumber = document.getElementById(`invoiceNumberEdit-${invoiceId}`).value;
+    const invoiceDate = document.getElementById(`invoiceDateEdit-${invoiceId}`).value;
+    const supplierId = document.getElementById(`supplierIdEdit-${invoiceId}`).value;
+    const sumBeforeTax = document.getElementById(`sumBeforeTaxEdit-${invoiceId}`).value;
+    const tax = document.getElementById(`taxEdit-${invoiceId}`).value;
+    const sumAfterTax = document.getElementById(`sumAfterTaxEdit-${invoiceId}`).value;
+
+    const invoice = {
+        invoiceTypeId,
+        invoiceNumber,
+        invoiceDate,
+        supplierId,
+        sumBeforeTax,
+        tax,
+        sumAfterTax
+    };
+
+    try {
+        await axios.put(`${apiUrl}/${invoiceId}`, invoice);
+        window.location.href = "http://127.0.0.1:5500/views/invoices.html?info=d";
+    } catch (error) {
+        console.error('Error saving invoice:', error);
     }
 }
