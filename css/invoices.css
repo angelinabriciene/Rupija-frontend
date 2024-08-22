@@ -4,3 +4,11 @@
     font-style: italic;
     text-align: center;
 }
+
+#invoice-table {
+    border-color: rgb(52, 40, 221);
+}
+
+.col-10 {
+    border: 50px;
+}

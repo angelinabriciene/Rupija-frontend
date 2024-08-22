@@ -25,6 +25,12 @@ async function fetchInvoices() {
         const response = await axios.get("http://localhost:8090/api/saskaitos");
         const invoices = response.data;
 
+        const typeResponce = await axios.get("http://localhost:8090/api/tipai");
+        const types = typeResponce.data;
+
+        const supplierResponce = await axios.get("http://localhost:8090/api/tiekejai");
+        const suppliers = supplierResponce.data;
+
         if (!Array.isArray(invoices)) {
             throw new Error('Invalid data format');
         }
@@ -34,13 +40,19 @@ async function fetchInvoices() {
 
         invoices.forEach((invoice, index) => {
             if (invoice && invoice.id) {
+                const invoiceType = types.find(type => type.id == invoice.invoiceTypeId);
+                const invoiceTypeName = invoiceType ? invoiceType.name : 'Unknown';
+
+                const invoiceSupplier = suppliers.find(supplier => supplier.id == invoice.supplierId);
+                const invoiceSupplierName = invoiceSupplier ? invoiceSupplier.name : 'Unknown';
+        
                 const invoiceRow = `
                     <tr id="invoice-row-${invoice.id}">
                         <th scope="row">${index + 1}</th>
-                        <td><a href="oneInvoiceType.html?id=${invoice.id}" data-type="${invoice.id}">${invoice.invoiceTypeId}</a></td>
+                        <td><a href="oneInvoiceType.html?id=${invoice.id}" data-type="${invoice.id}">${invoiceTypeName}</a></td>
                         <td>${invoice.invoiceNumber}</td>
                         <td>${invoice.invoiceDate}</td>
-                        <td><a href="oneSupplier.html?id=${invoice.id}" data-type="${invoice.id}">${invoice.supplierId}</a></td>
+                        <td><a href="oneSupplier.html?id=${invoice.id}" data-type="${invoice.id}">${invoiceSupplierName}</a></td>
                         <td>${invoice.sumBeforeTax}</td>
                         <td>${invoice.tax}</td>
                         <td>${invoice.sumAfterTax}</td>
