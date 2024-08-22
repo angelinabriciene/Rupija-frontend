@@ -52,7 +52,7 @@ async function fetchInvoices() {
                         <td><a href="oneInvoiceType.html?id=${invoice.id}" data-type="${invoice.id}">${invoiceTypeName}</a></td>
                         <td>${invoice.invoiceNumber}</td>
                         <td>${invoice.invoiceDate}</td>
-                        <td><a href="oneSupplier.html?id=${invoice.id}" data-type="${invoice.id}">${invoiceSupplierName}</a></td>
+                        <td><a href="oneSupplier.html?id=${invoice.supplierId}" data-type="${invoice.id}">${invoiceSupplierName}</a></td>
                         <td>${invoice.sumBeforeTax}</td>
                         <td>${invoice.tax}</td>
                         <td>${invoice.sumAfterTax}</td>

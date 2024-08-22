@@ -15,6 +15,7 @@
 <body>
     <div class="container">
         <div id="header">Rupija</div>
+        <div id="alert-message"></div>
         <div class="row">
             <div class="col-2">
                 <ul id="menuSideBar" class="nav flex-column">
@@ -35,10 +36,28 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-9">
+            <div class="col-10">
                 <div id="supplierHeader"></div>
-                <div id="invoice-list">
-                </div>
+                <h3>Sąskaitos</h3> 
+                <a id="createInvoce" href="./createInvoice.html">pridėti naują sąskaitą</a>
+                <table class="table" id="invoice-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Tipas</th>
+                            <th scope="col">Numeris</th>
+                            <th scope="col">Data</th>
+                            <th scope="col">Tiekėjas</th>
+                            <th scope="col">Suma be PVM</th>
+                            <th scope="col">PVM</th>
+                            <th scope="col">Suma su PVM</th>
+                            <th scope="col">Veiksmai</th>
+                        </tr>
+                        <div id="inputContainer"></div>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
                 <div id="pagination-buttons"></div>
             </div>
         </div>
