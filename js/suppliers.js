@@ -59,11 +59,21 @@ async function fetchSuppliers() {
                     inputRow.id = `inputRow-${supplier.id}`;
                     inputRow.innerHTML = `
                         <td colspan="8">
+                            <label for="nameEdit-${supplier.id}">Įmonės pavadinimas:</label>
                             <input type="text" id="nameEdit-${supplier.id}" class="form-control" value="${supplier.name}">
+                            
+                            <label for="supplierCodeEdit-${supplier.id}">Įmonės kodas:</label>
                             <input type="text" id="supplierCodeEdit-${supplier.id}" class="form-control" value="${supplier.supplierCode}">
+                            
+                            <label for="supplierTaxCodeEdit-${supplier.id}">PVM mokėtojo kodas:</label>
                             <input type="text" id="supplierTaxCodeEdit-${supplier.id}" class="form-control" value="${supplier.supplierTaxCode}">
+                            
+                            <label for="supplierAdressEdit-${supplier.id}">Adresas:</label>
                             <input type="text" id="supplierAdressEdit-${supplier.id}" class="form-control" value="${supplier.adress}">
+                            
+                            <label for="supplierBankAccEdit-${supplier.id}">Banko sąskaita:</label>
                             <input type="text" id="supplierBankAccEdit-${supplier.id}" class="form-control" value="${supplier.supplierBankAcc}">
+                            
                             <button type="button" class="btn btn-outline-success" id="saveSupplier-${supplier.id}">Išsaugoti</button>
                         </td>
                     `;

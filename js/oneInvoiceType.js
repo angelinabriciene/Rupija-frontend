@@ -73,20 +73,15 @@ async function fetchTypeInvoices() {
           inputRow.id = `inputRow-${invoice.id}`;
           inputRow.innerHTML = `
                   <td colspan="8">
-                      <input type="text" id="invoiceTypeIdEdit-${invoice.id}" class="form-control" value="${invoice.invoiceTypeId}">
-                      <input type="text" id="invoiceNumberEdit-${invoice.id}" class="form-control" value="${invoice.invoiceNumber}">
-                      <input type="text" id="invoiceDateEdit-${invoice.id}" class="form-control" value="${invoice.invoiceDate}">
-
-                      <input type="text" id="supplierIdEdit-${invoice.id}" class="form-control" value="${invoice.supplierId}">
-
-                      <input type="text" id="sumBeforeTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumBeforeTax}">
-
-                      <input type="text" id="taxEdit-${invoice.id}" class="form-control" value="${invoice.tax}">
-
-                      <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
-                      
-                      <button type="button" class="btn btn-outline-success" id="saveInvoice-${invoice.id}">Išsaugoti</button>
-                  </td>
+                            <select id="invoiceTypeIdEdit-${invoice.id}" class="form-control"></select>
+                            <input type="text" id="invoiceNumberEdit-${invoice.id}" class="form-control" value="${invoice.invoiceNumber}">
+                            <input type="text" id="invoiceDateEdit-${invoice.id}" class="form-control" value="${invoice.invoiceDate}">
+                            <select id="supplierIdEdit-${invoice.id}" class="form-control"></select>
+                            <input type="text" id="sumBeforeTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumBeforeTax}">
+                            <input type="text" id="taxEdit-${invoice.id}" class="form-control" value="${invoice.tax}">
+                            <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
+                            <button type="button" class="btn btn-outline-success" id="saveInvoice-${invoice.id}">Išsaugoti</button>
+                        </td>
               `;
 
           const existingInputRow = document.getElementById(`inputRow-${invoice.id}`);
@@ -95,6 +90,12 @@ async function fetchTypeInvoices() {
           }
 
           document.getElementById(`invoice-row-${invoice.id}`).insertAdjacentElement('afterend', inputRow);
+
+          await populateTypes(`invoiceTypeIdEdit-${invoice.id}`);
+                    await populateSuppliers(`supplierIdEdit-${invoice.id}`);
+
+                    document.getElementById(`invoiceTypeIdEdit-${invoice.id}`).value = invoice.invoiceTypeId;
+                    document.getElementById(`supplierIdEdit-${invoice.id}`).value = invoice.supplierId;
 
           document.getElementById(`saveInvoice-${invoice.id}`).addEventListener('click', () => {
             updateInvoice(invoice.id);
@@ -107,6 +108,44 @@ async function fetchTypeInvoices() {
 
   } catch (error) {
     console.error('Error fetching supplier:', error);
+  }
+}
+
+async function populateTypes(selectElementId) {
+  try {
+      const typesResponse = await axios.get('http://localhost:8090/api/tipai');
+      const types = typesResponse.data;
+
+      const invoiceTypeSelect = document.getElementById(selectElementId);
+      invoiceTypeSelect.innerHTML = '<option selected>Sąskaitos tipas</option>';
+
+      types.forEach(type => {
+          const option = document.createElement('option');
+          option.value = type.id;
+          option.textContent = type.name;
+          invoiceTypeSelect.appendChild(option);
+      });
+  } catch (error) {
+      console.error('Error fetching types:', error);
+  }
+}
+
+async function populateSuppliers(selectElementId) {
+  try {
+      const suppliersResponse = await axios.get('http://localhost:8090/api/tiekejai');
+      const suppliers = suppliersResponse.data;
+
+      const supplierSelect = document.getElementById(selectElementId);
+      supplierSelect.innerHTML = '<option selected>Tiekėjas</option>';
+
+      suppliers.forEach(supplier => {
+          const option = document.createElement('option');
+          option.value = supplier.id;
+          option.textContent = supplier.name;
+          supplierSelect.appendChild(option);
+      });
+  } catch (error) {
+      console.error('Error fetching suppliers:', error);
   }
 }
 
