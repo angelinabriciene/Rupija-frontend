@@ -49,7 +49,7 @@ async function fetchInvoices() {
                 const invoiceRow = `
                     <tr id="invoice-row-${invoice.id}">
                         <th scope="row">${index + 1}</th>
-                        <td><a href="oneInvoiceType.html?id=${invoice.id}" data-type="${invoice.id}">${invoiceTypeName}</a></td>
+                        <td><a href="oneInvoiceType.html?id=${invoice.invoiceTypeId}" data-type="${invoice.invoiceTypeId}">${invoiceTypeName}</a></td>
                         <td>${invoice.invoiceNumber}</td>
                         <td>${invoice.invoiceDate}</td>
                         <td><a href="oneSupplier.html?id=${invoice.supplierId}" data-type="${invoice.id}">${invoiceSupplierName}</a></td>
