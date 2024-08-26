@@ -13,8 +13,6 @@ document.getElementById('filter').addEventListener('input', (event) => {
 
 let allInvoices = [];
 let filterValue = '';
-let currentPage = 1;
-const itemsPerPage = 6;
 
 function showAlert(status) {
     const alertsContainer = document.getElementById('alert-message');
@@ -33,17 +31,9 @@ function applyFilters() {
 
     let filteredInvoices = allInvoices.filter(invoice =>
         invoice.invoiceNumber.toLowerCase().includes(filterValue.toLowerCase()) ||
-        (invoice.type && invoice.type.name.toLowerCase().includes(filterValue.toLowerCase()))
+        (invoice.supplierId && invoice.supplier.name.toLowerCase().includes(filterValue.toLowerCase()))
     );
-
-    currentPage = 1;
     displayInvoices(filteredInvoices);
-}
-
-function paginate(array, page, itemsPerPage) {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return array.slice(startIndex, endIndex);
 }
 
 async function fetchInvoices() {
@@ -82,9 +72,7 @@ function displayInvoices(invoices) {
     const invoiceTable = document.getElementById('invoice-table2');
     invoiceTable.querySelector('tbody').innerHTML = '';
 
-    const paginatedInvoices = paginate(invoices, currentPage, itemsPerPage);
-
-    paginatedInvoices.forEach((invoice, index) => {
+    invoices.forEach((invoice, index) => {
         if (invoice && invoice.id) { 
             const invoiceRow = `
                 <tr id="invoice-row-${invoice.id}">
