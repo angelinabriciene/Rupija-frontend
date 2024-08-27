@@ -1,19 +1,19 @@
 fetchTypeInvoices();
 
 function showAlert(status) {
-    const alertsContainer = document.getElementById('alert-message');
-    alertsContainer.innerHTML = `
+  const alertsContainer = document.getElementById('alert-message');
+  alertsContainer.innerHTML = `
           <div class="alert alert-success">
               <strong>Success!</strong>${status}.
           </div>
       `;
-    setTimeout(() => {
-        alertsContainer.innerHTML = '';
-    }, 3000);
+  setTimeout(() => {
+    alertsContainer.innerHTML = '';
+  }, 3000);
 }
 
 async function fetchTypeInvoices() {
-    const invoiceTypeId = new URLSearchParams(window.location.search).get('id');
+  const invoiceTypeId = new URLSearchParams(window.location.search).get('id');
   try {
     const response = await axios.get(`http://localhost:8090/api/saskaitos`);
     const invoices = response.data;
@@ -27,7 +27,7 @@ async function fetchTypeInvoices() {
     const typeName = document.getElementById('typeName');
     const selectedName = types.find(type => type.id == invoiceTypeId);
     typeName.textContent = selectedName.name;
-   
+
     const filteredInvoices = invoices.filter(invoice => invoice.invoiceTypeId == invoiceTypeId);
     console.log("Filtered Invoices:", filteredInvoices);
 
@@ -49,6 +49,10 @@ async function fetchTypeInvoices() {
         const invoiceRow = `
               <tr id="invoice-row-${invoice.id}">
                   <th scope="row">${index + 1}</th>
+                  <td>
+                    <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} 
+                        onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+                    </td>
                   <td>${invoice.invoiceNumber}</td>
                   <td>${invoice.invoiceDate}</td>
                   <td><a href="oneSupplier.html?id=${invoice.supplierId}" data-type="${invoice.id}">${invoiceSupplierName}</a></td>
@@ -62,12 +66,12 @@ async function fetchTypeInvoices() {
         invoiceTable.querySelector('tbody').insertAdjacentHTML('beforeend', invoiceRow);
 
         const deleteButton = document.getElementById(`deleteInvoice-${invoice.id}`);
-            deleteButton.addEventListener('click', async () => {
-                const confirmation = confirm(`Ar tikrai norite ištrinti sąskaitą: ${invoice.invoiceNumber} ; data:  ${invoice.invoiceDate}?`);
-                if (confirmation) {
-                    await deleteInvoice(invoice.id);
-                }
-            });
+        deleteButton.addEventListener('click', async () => {
+          const confirmation = confirm(`Ar tikrai norite ištrinti sąskaitą: ${invoice.invoiceNumber} ; data:  ${invoice.invoiceDate}?`);
+          if (confirmation) {
+            await deleteInvoice(invoice.id);
+          }
+        });
 
         const updateButton = document.getElementById(`updateInvoice-${invoice.id}`);
         updateButton.addEventListener('click', async () => {
@@ -94,10 +98,10 @@ async function fetchTypeInvoices() {
           document.getElementById(`invoice-row-${invoice.id}`).insertAdjacentElement('afterend', inputRow);
 
           await populateTypes(`invoiceTypeIdEdit-${invoice.id}`);
-                    await populateSuppliers(`supplierIdEdit-${invoice.id}`);
+          await populateSuppliers(`supplierIdEdit-${invoice.id}`);
 
-                    document.getElementById(`invoiceTypeIdEdit-${invoice.id}`).value = invoice.invoiceTypeId;
-                    document.getElementById(`supplierIdEdit-${invoice.id}`).value = invoice.supplierId;
+          document.getElementById(`invoiceTypeIdEdit-${invoice.id}`).value = invoice.invoiceTypeId;
+          document.getElementById(`supplierIdEdit-${invoice.id}`).value = invoice.supplierId;
 
           document.getElementById(`saveInvoice-${invoice.id}`).addEventListener('click', () => {
             updateInvoice(invoice.id);
@@ -115,79 +119,102 @@ async function fetchTypeInvoices() {
 
 async function populateTypes(selectElementId) {
   try {
-      const typesResponse = await axios.get('http://localhost:8090/api/tipai');
-      const types = typesResponse.data;
+    const typesResponse = await axios.get('http://localhost:8090/api/tipai');
+    const types = typesResponse.data;
 
-      const invoiceTypeSelect = document.getElementById(selectElementId);
-      invoiceTypeSelect.innerHTML = '<option selected>Sąskaitos tipas</option>';
+    const invoiceTypeSelect = document.getElementById(selectElementId);
+    invoiceTypeSelect.innerHTML = '<option selected>Sąskaitos tipas</option>';
 
-      types.forEach(type => {
-          const option = document.createElement('option');
-          option.value = type.id;
-          option.textContent = type.name;
-          invoiceTypeSelect.appendChild(option);
-      });
+    types.forEach(type => {
+      const option = document.createElement('option');
+      option.value = type.id;
+      option.textContent = type.name;
+      invoiceTypeSelect.appendChild(option);
+    });
   } catch (error) {
-      console.error('Error fetching types:', error);
+    console.error('Error fetching types:', error);
   }
 }
 
 async function populateSuppliers(selectElementId) {
   try {
-      const suppliersResponse = await axios.get('http://localhost:8090/api/tiekejai');
-      const suppliers = suppliersResponse.data;
+    const suppliersResponse = await axios.get('http://localhost:8090/api/tiekejai');
+    const suppliers = suppliersResponse.data;
 
-      const supplierSelect = document.getElementById(selectElementId);
-      supplierSelect.innerHTML = '<option selected>Tiekėjas</option>';
+    const supplierSelect = document.getElementById(selectElementId);
+    supplierSelect.innerHTML = '<option selected>Tiekėjas</option>';
 
-      suppliers.forEach(supplier => {
-          const option = document.createElement('option');
-          option.value = supplier.id;
-          option.textContent = supplier.name;
-          supplierSelect.appendChild(option);
-      });
+    suppliers.forEach(supplier => {
+      const option = document.createElement('option');
+      option.value = supplier.id;
+      option.textContent = supplier.name;
+      supplierSelect.appendChild(option);
+    });
   } catch (error) {
-      console.error('Error fetching suppliers:', error);
+    console.error('Error fetching suppliers:', error);
   }
 }
 
 async function deleteInvoice(invoiceId) {
-    const apiUrl = 'http://localhost:8090/api/saskaitos';
-    try {
-      await axios.delete(`${apiUrl}/${invoiceId}`);
-      fetchTypeInvoices();
-      showAlert(" Sąskaita ištrinta")
-    } catch (error) {
-      console.error('Error deleting invoice:', error);
-    }
+  const apiUrl = 'http://localhost:8090/api/saskaitos';
+  try {
+    await axios.delete(`${apiUrl}/${invoiceId}`);
+    fetchTypeInvoices();
+    showAlert(" Sąskaita ištrinta")
+  } catch (error) {
+    console.error('Error deleting invoice:', error);
   }
-  
-  async function updateInvoice(invoiceId) {
-    const apiUrl = 'http://localhost:8090/api/saskaitos';
-    const invoiceSupplierId = new URLSearchParams(window.location.search).get('id');
-    const invoiceTypeId = document.getElementById(`invoiceTypeIdEdit-${invoiceId}`).value;
-    const invoiceNumber = document.getElementById(`invoiceNumberEdit-${invoiceId}`).value;
-    const invoiceDate = document.getElementById(`invoiceDateEdit-${invoiceId}`).value;
-    const supplierId = document.getElementById(`supplierIdEdit-${invoiceId}`).value;
-    const sumBeforeTax = document.getElementById(`sumBeforeTaxEdit-${invoiceId}`).value;
-    const tax = document.getElementById(`taxEdit-${invoiceId}`).value;
-    const sumAfterTax = document.getElementById(`sumAfterTaxEdit-${invoiceId}`).value;
-  
+}
+
+async function updateInvoice(invoiceId) {
+  const apiUrl = 'http://localhost:8090/api/saskaitos';
+  const invoiceSupplierId = new URLSearchParams(window.location.search).get('id');
+  const invoiceTypeId = document.getElementById(`invoiceTypeIdEdit-${invoiceId}`).value;
+  const invoiceNumber = document.getElementById(`invoiceNumberEdit-${invoiceId}`).value;
+  const invoiceDate = document.getElementById(`invoiceDateEdit-${invoiceId}`).value;
+  const supplierId = document.getElementById(`supplierIdEdit-${invoiceId}`).value;
+  const sumBeforeTax = document.getElementById(`sumBeforeTaxEdit-${invoiceId}`).value;
+  const tax = document.getElementById(`taxEdit-${invoiceId}`).value;
+  const sumAfterTax = document.getElementById(`sumAfterTaxEdit-${invoiceId}`).value;
+
+  const invoice = {
+    invoiceTypeId,
+    invoiceNumber,
+    invoiceDate,
+    supplierId,
+    sumBeforeTax,
+    tax,
+    sumAfterTax
+  };
+
+  try {
+    await axios.put(`${apiUrl}/${invoiceId}`, invoice);
+    fetchTypeInvoices();
+    showAlert(" Sąskaita išsaugota")
+  } catch (error) {
+    console.error('Error saving invoice:', error);
+  }
+}
+
+async function updateInvoicePaymentStatus(invoiceId, isPaid) {
+  const apiUrl = 'http://localhost:8090/api/saskaitos';
+  console.log(invoiceId);
+
+  try {
+    const response = await axios.get(`${apiUrl}/${invoiceId}`);
+    const existingInvoice = response.data;
+
     const invoice = {
-      invoiceTypeId,
-      invoiceNumber,
-      invoiceDate,
-      supplierId,
-      sumBeforeTax,
-      tax,
-      sumAfterTax
+      ...existingInvoice,
+      unpaid: !isPaid,
     };
-  
-    try {
-      await axios.put(`${apiUrl}/${invoiceId}`, invoice);
-      fetchTypeInvoices();
-      showAlert(" Sąskaita išsaugota")
-    } catch (error) {
-      console.error('Error saving invoice:', error);
-    }
+
+    await axios.put(`${apiUrl}/${invoiceId}`, invoice);
+
+    console.log('Invoice payment status updated successfully');
+    alert('Mokėjimas pakoreguotas');
+  } catch (error) {
+    console.error('Error updating payment status:', error);
+    alert('Sąskaitos pažymėti nepavyko, bandykite dar karą');
   }
+}

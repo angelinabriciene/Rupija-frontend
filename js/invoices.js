@@ -283,10 +283,10 @@ async function updateInvoicePaymentStatus(invoiceId, isPaid) {
       await axios.put(`${apiUrl}/${invoiceId}`, invoice);
   
       console.log('Invoice payment status updated successfully');
-      alert('Sąskaita apmokėta');
+      alert('Mokėjimas pakoreguotas');
     } catch (error) {
       console.error('Error updating payment status:', error);
-      alert('Sąskaitos pažymėti kaip apmokėtos nepavyko, bandykite dar karą');
+      alert('Sąskaitos pažymėti nepavyko, bandykite dar karą');
     }
   }
 
