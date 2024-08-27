@@ -126,6 +126,10 @@ function displayInvoices(invoices) {
             const invoiceRow = `
                 <tr id="invoice-row-${invoice.id}">
                     <th scope="row">${index + 1}</th>
+                    <td>
+                    <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} 
+                        onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+                    </td>
                     <td><a href="oneInvoiceType.html?id=${invoice.invoiceTypeId}" data-type="${invoice.invoiceTypeId}">${invoice.type.name}</a></td>
                     <td>${invoice.invoiceNumber}</td>
                     <td>${invoice.invoiceDate}</td>
@@ -262,6 +266,29 @@ async function updateInvoice(invoiceId) {
         console.error('Error saving invoice:', error);
     }
 }
+
+async function updateInvoicePaymentStatus(invoiceId, isPaid) {
+    const apiUrl = 'http://localhost:8090/api/saskaitos';
+    console.log(invoiceId);
+    
+    try {
+      const response = await axios.get(`${apiUrl}/${invoiceId}`);
+      const existingInvoice = response.data;
+  
+      const invoice = {
+        ...existingInvoice,
+        unpaid: !isPaid,
+      };
+  
+      await axios.put(`${apiUrl}/${invoiceId}`, invoice);
+  
+      console.log('Invoice payment status updated successfully');
+      alert('Sąskaita apmokėta');
+    } catch (error) {
+      console.error('Error updating payment status:', error);
+      alert('Sąskaitos pažymėti kaip apmokėtos nepavyko, bandykite dar karą');
+    }
+  }
 
 fetchInvoices().then(() => {
     populateYearFilter();
