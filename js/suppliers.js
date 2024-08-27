@@ -43,15 +43,9 @@ async function fetchSuppliers() {
                         <td>${supplier.adress}</td>
                         <td>${supplier.supplierBankAcc}</td>
                         <td><button id="updateSupplier-${supplier.id}" data-id="${supplier.id}">Redaguoti</button></td>
-                        <td><button id="deleteSupplier-${supplier.id}" data-id="${supplier.id}">Ištrinti</button></td>
                     </tr>
                 `;
                 supplierTable.querySelector('tbody').insertAdjacentHTML('beforeend', supplierRow);
-        
-                const deleteButton = document.getElementById(`deleteSupplier-${supplier.id}`);
-                deleteButton.addEventListener('click', async () => {
-                    await deleteSupplier(supplier.id);
-                });
         
                 const updateButton = document.getElementById(`updateSupplier-${supplier.id}`);
                 updateButton.addEventListener('click', async () => {
@@ -96,16 +90,6 @@ async function fetchSuppliers() {
 
     } catch (error) {
         console.error('Error fetching suppliers:', error);
-    }
-}
-
-async function deleteSupplier(supplierId) {
-    const apiUrl = 'http://localhost:8090/api/tiekejai';
-    try {
-        await axios.delete(`${apiUrl}/${supplierId}`);
-        window.location.href = "http://127.0.0.1:5500/views/suppliers.html?info=d";
-    } catch (error) {
-        console.error('Error deleting supplier:', error);
     }
 }
 

@@ -62,9 +62,12 @@ async function fetchTypeInvoices() {
         invoiceTable.querySelector('tbody').insertAdjacentHTML('beforeend', invoiceRow);
 
         const deleteButton = document.getElementById(`deleteInvoice-${invoice.id}`);
-        deleteButton.addEventListener('click', async () => {
-          await deleteInvoice(invoice.id);
-        });
+            deleteButton.addEventListener('click', async () => {
+                const confirmation = confirm(`Ar tikrai norite ištrinti sąskaitą: ${invoice.invoiceNumber} ; data:  ${invoice.invoiceDate}?`);
+                if (confirmation) {
+                    await deleteInvoice(invoice.id);
+                }
+            });
 
         const updateButton = document.getElementById(`updateInvoice-${invoice.id}`);
         updateButton.addEventListener('click', async () => {
