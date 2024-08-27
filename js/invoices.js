@@ -11,8 +11,28 @@ document.getElementById('filter').addEventListener('input', (event) => {
     applyFilters();
 });
 
+document.getElementById('year-filter').addEventListener('change', (event) => {
+    yearFilterValue = event.target.value;
+    applyFilters();
+});
+
+document.getElementById('month-filter').addEventListener('change', (event) => {
+    monthFilterValue = event.target.value;
+    applyFilters();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const { year, month } = getCurrentYearAndMonth();
+    yearFilterValue = year;
+    monthFilterValue = month;
+    document.getElementById('year-filter').value = yearFilterValue;
+    document.getElementById('month-filter').value = monthFilterValue;
+});
+
 let allInvoices = [];
 let filterValue = '';
+let yearFilterValue = '';
+let monthFilterValue = '';
 
 function showAlert(status) {
     const alertsContainer = document.getElementById('alert-message');
@@ -26,13 +46,42 @@ function showAlert(status) {
     }, 3000);
 }
 
+function getCurrentYearAndMonth() {
+    const now = new Date();
+    const year = now.getFullYear().toString();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    return { year, month };
+}
+
+function populateYearFilter() {
+    const yearSelect = document.getElementById('year-filter');
+    const years = [...new Set(allInvoices.map(invoice => new Date(invoice.invoiceDate).getFullYear()))];
+
+    years.sort().forEach(year => {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+    });
+}
+
 function applyFilters() {
     if (allInvoices.length === 0) return;
 
-    let filteredInvoices = allInvoices.filter(invoice =>
-        invoice.invoiceNumber.toLowerCase().includes(filterValue.toLowerCase()) ||
-        (invoice.supplierId && invoice.supplier.name.toLowerCase().includes(filterValue.toLowerCase()))
-    );
+    let filteredInvoices = allInvoices.filter(invoice => {
+        const matchesFilterValue = invoice.invoiceNumber.toLowerCase().includes(filterValue.toLowerCase()) ||
+            (invoice.supplierId && invoice.supplier.name.toLowerCase().includes(filterValue.toLowerCase()));
+        
+        const invoiceDate = new Date(invoice.invoiceDate);
+        const invoiceYear = invoiceDate.getFullYear().toString();
+        const invoiceMonth = (invoiceDate.getMonth() + 1).toString().padStart(2, '0');
+
+        const matchesYear = !yearFilterValue || invoiceYear === yearFilterValue;
+        const matchesMonth = !monthFilterValue || invoiceMonth === monthFilterValue;
+
+        return matchesFilterValue && matchesYear && matchesMonth;
+    });
+
     displayInvoices(filteredInvoices);
 }
 
@@ -211,4 +260,7 @@ async function updateInvoice(invoiceId) {
     }
 }
 
-fetchInvoices();
+fetchInvoices().then(() => {
+    populateYearFilter();
+    applyFilters();
+});
