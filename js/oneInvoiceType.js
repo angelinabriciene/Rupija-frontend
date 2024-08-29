@@ -1,5 +1,39 @@
 fetchTypeInvoices();
 
+document.getElementById('downloadPdf').addEventListener('click', () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4',
+      putOnlyUsedFonts: true,
+  });
+  const headerText = document.getElementById('typeName').textContent;
+
+
+  const title = `${headerText}`;
+  doc.setFont("Helvetica", "normal");
+  doc.text(title.trim(), 14, 10);
+
+  doc.autoTable({
+      html: '#invoice-table',
+      startY: 20,
+      headStyles: { fillColor: [41, 128, 185] },
+      styles: { cellPadding: 1.5, fontSize: 10 },
+      margin: { top: 10 },
+      columnStyles: {
+          8: { cellWidth: 0 },
+      },
+      didParseCell: function (data) {
+          if (data.column.index === 8) {
+              data.cell.text = '';
+          }
+      }
+  });
+
+  doc.save('invoices.pdf');
+});
+
 function showAlert(status) {
   const alertsContainer = document.getElementById('alert-message');
   alertsContainer.innerHTML = `
@@ -52,6 +86,7 @@ async function fetchTypeInvoices() {
                   <td>
                     <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} 
                         onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+                        <span>  ${invoice.unpaid ? '-' : 'apmokėta'} </span>
                     </td>
                   <td>${invoice.invoiceNumber}</td>
                   <td>${invoice.invoiceDate}</td>

@@ -29,6 +29,41 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('month-filter').value = monthFilterValue;
 });
 
+document.getElementById('downloadPdf').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4',
+        format: 'a4',
+        putOnlyUsedFonts: true,
+    });
+    const headerText = document.querySelector('.col-10 h3').textContent;
+
+
+    const title = `${headerText} ${yearFilterValue || ''}-${monthFilterValue || ''}`;
+    doc.setFont("Helvetica", "normal");
+    doc.text(title.trim(), 14, 10);
+
+    doc.autoTable({
+        html: '#invoice-table2',
+        startY: 20,
+        headStyles: { fillColor: [41, 128, 185] },
+        styles: { cellPadding: 1.5, fontSize: 10 },
+        margin: { top: 10 },
+        columnStyles: {
+            9: { cellWidth: 0 },
+        },
+        didParseCell: function (data) {
+            if (data.column.index === 9) {
+                data.cell.text = '';
+            }
+        }
+    });
+
+    doc.save('invoices.pdf');
+});
+
 let allInvoices = [];
 let filterValue = '';
 let yearFilterValue = '';
@@ -127,8 +162,8 @@ function displayInvoices(invoices) {
                 <tr id="invoice-row-${invoice.id}">
                     <th scope="row">${index + 1}</th>
                     <td>
-                    <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} 
-                        onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+                    <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+                    <span>  ${invoice.unpaid ? '-' : 'apmokėta'} </span>
                     </td>
                     <td><a href="oneInvoiceType.html?id=${invoice.invoiceTypeId}" data-type="${invoice.invoiceTypeId}">${invoice.type.name}</a></td>
                     <td>${invoice.invoiceNumber}</td>
