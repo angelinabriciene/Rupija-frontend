@@ -39,3 +39,11 @@
     color: #0c51e6;
     cursor: pointer;
 }
+
+label {
+    margin-top: 10px;
+}
+
+.btn-outline-success {
+    margin-top: 20px;
+}

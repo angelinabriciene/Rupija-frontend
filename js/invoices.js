@@ -201,13 +201,34 @@ function displayInvoices(invoices) {
 
                 inputRow.innerHTML = `
                     <td colspan="8">
+                        <div class="form-group col-md-3">
+                        <label for="invoiceType">Sąskaitos tipas</label>
                         <select id="invoiceTypeIdEdit-${invoice.id}" class="form-control"></select>
+                        </div>
+                        <div class="form-group col-md-3">
+                        <label for="invoiceType">Sąskaitos numeris</label>
                         <input type="text" id="invoiceNumberEdit-${invoice.id}" class="form-control" value="${invoice.invoiceNumber}">
+                        </div>      
+                        <div class="form-group col-md-3">
+                        <label for="invoiceType">Sąskaitos data</label>  
                         <input type="text" id="invoiceDateEdit-${invoice.id}" class="form-control" value="${invoice.invoiceDate}">
+                        </div> 
+                        <div class="form-group col-md-3">
+                        <label for="invoiceType">Pasirinkite tiekėją</label>
                         <select id="supplierIdEdit-${invoice.id}" class="form-control"></select>
+                        </div> 
+                        <div class="form-group col-md-3">
+                        <label for="invoiceType">Suma be PVM</label>
                         <input type="text" id="sumBeforeTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumBeforeTax}">
+                        </div>
+                        <div class="form-group col-md-3">
+                        <label for="invoiceType">PVM</label>
                         <input type="text" id="taxEdit-${invoice.id}" class="form-control" value="${invoice.tax}">
+                        </div>
+                        <div class="form-group col-md-3">
+                        <label for="invoiceType">Suma su PVM</label>
                         <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
+                        </div>
                         <button type="button" class="btn btn-outline-success" id="saveInvoice-${invoice.id}">Išsaugoti</button>
                     </td>
                 `;
