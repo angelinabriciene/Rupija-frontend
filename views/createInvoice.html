@@ -15,43 +15,50 @@
 </head>
 
 <body>
-    <div class="container">
-        <form>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="invoiceType">Pasirinkite sąskaitos tipą</label>
-                    <select id="invoiceType" class="form-control">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="invoiceNumber">invoiceNumber</label>
-                    <input type="text" class="form-control" id="invoiceNumber" placeholder="invoiceNumber">
-                </div>
-                <div class="form-group col-md-6">
-                    <label id="invoiceDateLabel" for="invoiceDate">invoiceDate</label>
-                    <input type="text" class="form-control" id="invoiceDate" placeholder="invoiceDate">
-                </div>
-                <div class="form-group col-md-6">
-                    <label id="supplierLabel" for="supplier">Pasirinkite tiekėją</label>
-                    <select id="supplier" class="form-control">
-                </div>
-                <div class="form-group col-md-6">
-                    <label id="sumBeforeTaxLabel" for="sumBeforeTax">sumBeforeTax</label>
-                    <input type="text" class="form-control" id="sumBeforeTax" placeholder="sumBeforeTax">
-                </div>
-                <div class="form-group col-md-6">
-                    <label id="taxLabel" for="tax">tax</label>
-                    <input type="text" class="form-control" id="tax" placeholder="tax">
-                </div>
-                <div class="form-group col-md-6">
-                    <label id="sumAfterTaxLabel" for="sumAfterTax">sumAfterTax</label>
-                    <input type="text" class="form-control" id="sumAfterTax" placeholder="sumAfterTax">
-                </div>
-                <button id="submitInvoice" type="submit" class="btn btn-primary">Įrašyti</button>
+    <a href="./invoices.html"> --- Grįžti į pargindinį puslapį</a>
+    <div id="header">Rupija</div>
+    <div id="mainRow" class="row">
+        <div class="col-1"></div>
+        <div class="col-3">
+            <div class="form-group col-md-6">
+                <label for="invoiceType">Pasirinkite sąskaitos tipą</label>
+                <select id="invoiceType" class="form-control"></select>
             </div>
-    </div>
-    </form>
+            <div class="form-group col-md-6">
+                <label id="supplierLabel" for="supplier">Pasirinkite tiekėją</label>
+                <select id="supplier" class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-3">
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="invoiceNumber">Sąskaitos faktūros numeris</label>
+                        <input type="text" class="form-control" id="invoiceNumber" placeholder="Sąskaitos faktūros numeris">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label id="invoiceDateLabel" for="invoiceDate">Sąskaitos faktūros data</label>
+                        <input type="text" class="form-control" id="invoiceDate" placeholder="MMMM-mm-dd">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label id="sumBeforeTaxLabel" for="sumBeforeTax">Suma be PVM</label>
+                        <input type="text" class="form-control" id="sumBeforeTax" placeholder="Suma be PVM">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label id="taxLabel" for="tax">PVM</label>
+                        <input type="text" class="form-control" id="tax" placeholder="PVM">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label id="sumAfterTaxLabel" for="sumAfterTax">Suma su PVM</label>
+                        <input type="text" class="form-control" id="sumAfterTax" placeholder="Suma su PVM">
+                    </div>
+                    <button id="submitInvoice" type="submit" class="btn btn-primary">Įrašyti</button>
+                </div>
+            </form>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
+
 
 </html>

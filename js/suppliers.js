@@ -5,7 +5,7 @@ if (window.location.href.includes("info=d")) {
 }
 
 if (window.location.href.includes("info=u")) {
-    showAlert(" Tiekėjas ištrintas");
+    showAlert(" Tiekėjas išsaugotas");
 }
 
 function showAlert(status) {

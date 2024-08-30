@@ -10,55 +10,58 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="../css/suppliers.css">
-        <script defer src="../js/suppliers.js"></script>
+    <link rel="stylesheet" href="../css/suppliers.css">
+    <script defer src="../js/suppliers.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <div id="header">Rupija</div>
-        <div id="alert-message"></div>
-        <div class="row">
-            <div class="col-2">
-                <ul id="menuSideBar" class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="suppliers.html">Tiekėjai</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="invoices.html">Sąskaitos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Operacijos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Statistika</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Darbų sąrašas</a>
-                    </li>
-                </ul>
+    <div id="header">Rupija</div>
+    <div id="alert-message"></div>
+    <div id="mainRow" class="row">
+        <div class="col-1"></div>
+        <div id="sideMenu" class="col-1">
+            <ul id="menuSideBar" class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="suppliers.html">Tiekėjai</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="invoices.html">Sąskaitos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">Operacijos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">Statistika</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">Darbų sąrašas</a>
+                </li>
+            </ul>
+        </div>
+        <div id="supplierHeader" class="col-10">
+            <h3>Tiekėjai</h3>
+            <a id="createSupplier" href="./createSupplier.html">+ pridėti naują tiekėją</a>
+            <div class="row">
+                <div class="col-11">
+                    <table class="table" id="supplier-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Pavadinimas</th>
+                                <th scope="col">Įmonės kodas</th>
+                                <th scope="col">PVM mokėtojo kodas</th>
+                                <th scope="col">Adresas</th>
+                                <th scope="col">Banko sąskaita</th>
+                                <th scope="col">Veiksmai</th>
+                            </tr>
+                            <div id="inputContainer"></div>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="col-10">
-                <h3>Tiekėjai</h3> 
-                <a id="createSupplier" href="./createSupplier.html">pridėti naują tiekėją</a>
-                <table class="table" id="supplier-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Pavadinimas</th>
-                            <th scope="col">Įmonės kodas</th>
-                            <th scope="col">PVM mokėtojo kodas</th>
-                            <th scope="col">Adresas</th>
-                            <th scope="col">Banko sąskaita</th>
-                            <th scope="col">Veiksmai</th>
-                        </tr>
-                        <div id="inputContainer"></div>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-                <div id="pagination-buttons"></div>
-            </div>
+            <div id="pagination-buttons"></div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

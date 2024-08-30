@@ -1,0 +1,19 @@
+#header {
+    font-weight: bold;
+    font-size: 50px;
+    font-style: italic;
+    text-align: center;
+    border-bottom: 5px solid #333333;
+}
+
+.row {
+    background-color: #d3d0d0;
+}
+
+label {
+    margin-top: 10px;
+}
+
+#submitInvoice {
+    margin-top: 10px;
+}
