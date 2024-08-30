@@ -166,7 +166,7 @@ function displayInvoices(invoices) {
     invoices.forEach((invoice, index) => {
         if (invoice && invoice.id) {
             const invoiceRow = `
-                <tr id="invoice-row-${invoice.id}">
+                <tr id="invoice-row-${invoice.id}" class="invoice-row">
                     <th scope="row">${index + 1}</th>
                     <td>
                     <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
@@ -197,6 +197,8 @@ function displayInvoices(invoices) {
             updateButton.addEventListener('click', async () => {
                 const inputRow = document.createElement('tr');
                 inputRow.id = `inputRow-${invoice.id}`;
+                inputRow.classList.add('invoice-row');
+
                 inputRow.innerHTML = `
                     <td colspan="8">
                         <select id="invoiceTypeIdEdit-${invoice.id}" class="form-control"></select>
