@@ -3,4 +3,43 @@
     font-size: 50px;
     font-style: italic;
     text-align: center;
+    border-bottom: 5px solid #333333;
+}
+
+#invoiceHeaderRow {
+    margin-top: 20px;
+}
+
+.table {
+    margin-top: 20px;
+    background-color: #F8F9F9;
+    border: 1px solid #D3D3D3;
+}
+
+.table th {
+    background-color: #333333;
+    color: #FFFFFF;
+}
+
+.row {
+    background-color: #d3d0d0;
+}
+
+.nav-link {
+    color: #F8F9F9;
+}
+
+#createInvoce {
+    color: #F8F9F9;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+#createInvoce:hover {
+    color: #0c51e6;
+    cursor: pointer;
+}
+
+#downloadPdf {
+    margin-top: 50px;
 }
