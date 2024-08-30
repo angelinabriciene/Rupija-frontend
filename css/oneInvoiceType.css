@@ -43,3 +43,19 @@
 #downloadPdf {
     margin-top: 50px;
 }
+
+#total {
+    font-weight: bold;
+}
+
+#totalSumBeforeTax {
+    font-weight: bold;
+}
+
+#totalSumTax {
+    font-weight: bold;
+}
+
+#totalSumAfterTax {
+    font-weight: bold;
+}

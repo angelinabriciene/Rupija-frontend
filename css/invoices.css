@@ -82,3 +82,19 @@ label {
     width: 150px;
     margin-right: 10px;
 }
+
+#total {
+    font-weight: bold;
+}
+
+#totalSumBeforeTax {
+    font-weight: bold;
+}
+
+#totalSumTax {
+    font-weight: bold;
+}
+
+#totalSumAfterTax {
+    font-weight: bold;
+}

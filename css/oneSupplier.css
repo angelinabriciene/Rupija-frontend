@@ -62,3 +62,19 @@
     color: #0c51e6;
     cursor: pointer;
 }
+
+#total {
+    font-weight: bold;
+}
+
+#totalSumBeforeTax {
+    font-weight: bold;
+}
+
+#totalSumTax {
+    font-weight: bold;
+}
+
+#totalSumAfterTax {
+    font-weight: bold;
+}

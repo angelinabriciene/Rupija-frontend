@@ -7,9 +7,13 @@ document.getElementById('downloadPdf').addEventListener('click', () => {
     putOnlyUsedFonts: true,
   });
   const headerText = document.getElementById('supplierName').textContent;
+  const sumText = document.getElementById('total').textContent;
+  const sumBeforeTaxText = document.getElementById('totalSumBeforeTax').textContent;
+  const taxText = document.getElementById('totalSumTax').textContent;
+  const sumAfterTaxText = document.getElementById('totalSumAfterTax').textContent;
 
 
-  const title = `${headerText}`;
+  const title = `${headerText} ${yearFilterValue || ''}-${monthFilterValue || ''}`;
   doc.setFont("Helvetica", "normal");
   doc.text(title.trim(), 14, 10);
 
@@ -29,7 +33,14 @@ document.getElementById('downloadPdf').addEventListener('click', () => {
     }
   });
 
-  doc.save('invoices.pdf');
+  const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.text(`${sumText}`, 14, finalY);
+    doc.text(`${sumBeforeTaxText}`, 14, finalY + 10);
+    doc.text(`${taxText}`, 14, finalY + 20);
+    doc.text(`${sumAfterTaxText}`, 14, finalY + 30);
+
+    doc.save('invoices.pdf');
 });
 
 document.getElementById('filter').addEventListener('input', (event) => {
@@ -151,11 +162,18 @@ async function displayInvoices(invoices) {
   const invoiceTable = document.getElementById('invoice-table');
   invoiceTable.querySelector('tbody').innerHTML = '';
 
+  let totalSumBeforeTax = 0;
+  let totalTax = 0;
+  let totalSumAfterTax = 0;
+
   const types = await axios.get("http://localhost:8090/api/tipai");
   const suppliers = await axios.get("http://localhost:8090/api/tiekejai");
 
   invoices.forEach((invoice, index) => {
     if (invoice && invoice.id) {
+      totalSumBeforeTax += parseFloat(invoice.sumBeforeTax);
+      totalTax += parseFloat(invoice.tax);
+      totalSumAfterTax += parseFloat(invoice.sumAfterTax);
       const invoiceType = types.data.find(type => type.id == invoice.invoiceTypeId);
       const invoiceTypeName = invoiceType ? invoiceType.name : 'Unknown';
 
@@ -228,6 +246,10 @@ async function displayInvoices(invoices) {
       console.warn('Invalid invoice object:', invoice);
     }
   });
+
+  document.getElementById('totalSumBeforeTax').querySelector('span').innerText = `${totalSumBeforeTax.toFixed(2)}`;
+  document.getElementById('totalSumTax').querySelector('span').innerText = `${totalTax.toFixed(2)}`;
+  document.getElementById('totalSumAfterTax').querySelector('span').innerText = `${totalSumAfterTax.toFixed(2)}`;
 }
 
 async function populateTypes(selectElementId) {

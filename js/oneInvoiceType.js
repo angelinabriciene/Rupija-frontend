@@ -3,12 +3,16 @@ fetchTypeInvoices();
 document.getElementById('downloadPdf').addEventListener('click', () => {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({
-      orientation: 'landscape',
-      unit: 'mm',
-      format: 'a4',
-      putOnlyUsedFonts: true,
+    orientation: 'landscape',
+    unit: 'mm',
+    format: 'a4',
+    putOnlyUsedFonts: true,
   });
   const headerText = document.getElementById('typeName').textContent;
+  const sumText = document.getElementById('total').textContent;
+  const sumBeforeTaxText = document.getElementById('totalSumBeforeTax').textContent;
+  const taxText = document.getElementById('totalSumTax').textContent;
+  const sumAfterTaxText = document.getElementById('totalSumAfterTax').textContent;
 
 
   const title = `${headerText}`;
@@ -16,20 +20,27 @@ document.getElementById('downloadPdf').addEventListener('click', () => {
   doc.text(title.trim(), 14, 10);
 
   doc.autoTable({
-      html: '#invoice-table',
-      startY: 20,
-      headStyles: { fillColor: [41, 128, 185] },
-      styles: { cellPadding: 1.5, fontSize: 10 },
-      margin: { top: 10 },
-      columnStyles: {
-          8: { cellWidth: 0 },
-      },
-      didParseCell: function (data) {
-          if (data.column.index === 8) {
-              data.cell.text = '';
-          }
+    html: '#invoice-table',
+    startY: 20,
+    headStyles: { fillColor: [41, 128, 185] },
+    styles: { cellPadding: 1.5, fontSize: 10 },
+    margin: { top: 10 },
+    columnStyles: {
+      8: { cellWidth: 0 },
+    },
+    didParseCell: function (data) {
+      if (data.column.index === 8) {
+        data.cell.text = '';
       }
+    }
   });
+
+  const finalY = doc.lastAutoTable.finalY + 10;
+  doc.setFontSize(12);
+  doc.text(`${sumText}`, 14, finalY);
+  doc.text(`${sumBeforeTaxText}`, 14, finalY + 10);
+  doc.text(`${taxText}`, 14, finalY + 20);
+  doc.text(`${sumAfterTaxText}`, 14, finalY + 30);
 
   doc.save('invoices.pdf');
 });
@@ -48,6 +59,11 @@ function showAlert(status) {
 
 async function fetchTypeInvoices() {
   const invoiceTypeId = new URLSearchParams(window.location.search).get('id');
+
+  let totalSumBeforeTax = 0;
+  let totalTax = 0;
+  let totalSumAfterTax = 0;
+
   try {
     const response = await axios.get(`http://localhost:8090/api/saskaitos`);
     const invoices = response.data;
@@ -74,6 +90,9 @@ async function fetchTypeInvoices() {
 
     filteredInvoices.forEach((invoice, index) => {
       if (invoice && invoice.id) {
+        totalSumBeforeTax += parseFloat(invoice.sumBeforeTax);
+        totalTax += parseFloat(invoice.tax);
+        totalSumAfterTax += parseFloat(invoice.sumAfterTax);
         const invoiceType = types.find(type => type.id == invoice.invoiceTypeId);
         const invoiceTypeName = invoiceType ? invoiceType.name : 'Unknown';
 
@@ -150,6 +169,10 @@ async function fetchTypeInvoices() {
   } catch (error) {
     console.error('Error fetching supplier:', error);
   }
+
+  document.getElementById('totalSumBeforeTax').querySelector('span').innerText = `${totalSumBeforeTax.toFixed(2)}`;
+  document.getElementById('totalSumTax').querySelector('span').innerText = `${totalTax.toFixed(2)}`;
+  document.getElementById('totalSumAfterTax').querySelector('span').innerText = `${totalSumAfterTax.toFixed(2)}`;
 }
 
 async function populateTypes(selectElementId) {

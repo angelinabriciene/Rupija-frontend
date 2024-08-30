@@ -40,10 +40,13 @@ document.getElementById('downloadPdf').addEventListener('click', () => {
         orientation: 'landscape',
         unit: 'mm',
         format: 'a4',
-        format: 'a4',
         putOnlyUsedFonts: true,
     });
     const headerText = document.querySelector('.col-10 h3').textContent;
+    const sumText = document.getElementById('total').textContent;
+    const sumBeforeTaxText = document.getElementById('totalSumBeforeTax').textContent;
+    const taxText = document.getElementById('totalSumTax').textContent;
+    const sumAfterTaxText = document.getElementById('totalSumAfterTax').textContent;
 
 
     const title = `${headerText} ${yearFilterValue || ''}-${monthFilterValue || ''}`;
@@ -65,6 +68,13 @@ document.getElementById('downloadPdf').addEventListener('click', () => {
             }
         }
     });
+
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.text(`${sumText}`, 14, finalY);
+    doc.text(`${sumBeforeTaxText}`, 14, finalY + 10);
+    doc.text(`${taxText}`, 14, finalY + 20);
+    doc.text(`${sumAfterTaxText}`, 14, finalY + 30);
 
     doc.save('invoices.pdf');
 });
@@ -163,8 +173,16 @@ function displayInvoices(invoices) {
     const invoiceTable = document.getElementById('invoice-table2');
     invoiceTable.querySelector('tbody').innerHTML = '';
 
+    let totalSumBeforeTax = 0;
+    let totalTax = 0;
+    let totalSumAfterTax = 0;
+
     invoices.forEach((invoice, index) => {
         if (invoice && invoice.id) {
+            totalSumBeforeTax += parseFloat(invoice.sumBeforeTax);
+            totalTax += parseFloat(invoice.tax);
+            totalSumAfterTax += parseFloat(invoice.sumAfterTax);
+
             const invoiceRow = `
                 <tr id="invoice-row-${invoice.id}" class="invoice-row">
                     <th scope="row">${index + 1}</th>
@@ -254,6 +272,10 @@ function displayInvoices(invoices) {
             console.warn('Invalid invoice object:', invoice);
         }
     });
+
+    document.getElementById('totalSumBeforeTax').querySelector('span').innerText = `${totalSumBeforeTax.toFixed(2)}`;
+    document.getElementById('totalSumTax').querySelector('span').innerText = `${totalTax.toFixed(2)}`;
+    document.getElementById('totalSumAfterTax').querySelector('span').innerText = `${totalSumAfterTax.toFixed(2)}`;
 }
 
 async function populateTypes(selectElementId) {
