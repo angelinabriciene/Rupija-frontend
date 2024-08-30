@@ -21,6 +21,11 @@ document.getElementById('month-filter').addEventListener('change', (event) => {
     applyFilters();
 });
 
+document.getElementById('paid-filter').addEventListener('change', (event) => {
+    paidFilterValue = event.target.value;
+    applyFilters();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const { year, month } = getCurrentYearAndMonth();
     yearFilterValue = year;
@@ -68,6 +73,7 @@ let allInvoices = [];
 let filterValue = '';
 let yearFilterValue = '';
 let monthFilterValue = '';
+let paidFilterValue = '';
 
 function showAlert(status) {
     const alertsContainer = document.getElementById('alert-message');
@@ -106,15 +112,16 @@ function applyFilters() {
     let filteredInvoices = allInvoices.filter(invoice => {
         const matchesFilterValue = invoice.invoiceNumber.toLowerCase().includes(filterValue.toLowerCase()) ||
             (invoice.supplierId && invoice.supplier.name.toLowerCase().includes(filterValue.toLowerCase()));
-        
+
         const invoiceDate = new Date(invoice.invoiceDate);
         const invoiceYear = invoiceDate.getFullYear().toString();
         const invoiceMonth = (invoiceDate.getMonth() + 1).toString().padStart(2, '0');
 
         const matchesYear = !yearFilterValue || invoiceYear === yearFilterValue;
         const matchesMonth = !monthFilterValue || invoiceMonth === monthFilterValue;
+        const matchesStatus = !paidFilterValue || (paidFilterValue === 'paid' ? !invoice.unpaid : invoice.unpaid);
 
-        return matchesFilterValue && matchesYear && matchesMonth;
+        return matchesFilterValue && matchesYear && matchesMonth && matchesStatus;
     });
 
     displayInvoices(filteredInvoices);
@@ -157,7 +164,7 @@ function displayInvoices(invoices) {
     invoiceTable.querySelector('tbody').innerHTML = '';
 
     invoices.forEach((invoice, index) => {
-        if (invoice && invoice.id) { 
+        if (invoice && invoice.id) {
             const invoiceRow = `
                 <tr id="invoice-row-${invoice.id}">
                     <th scope="row">${index + 1}</th>
@@ -305,25 +312,25 @@ async function updateInvoice(invoiceId) {
 async function updateInvoicePaymentStatus(invoiceId, isPaid) {
     const apiUrl = 'http://localhost:8090/api/saskaitos';
     console.log(invoiceId);
-    
+
     try {
-      const response = await axios.get(`${apiUrl}/${invoiceId}`);
-      const existingInvoice = response.data;
-  
-      const invoice = {
-        ...existingInvoice,
-        unpaid: !isPaid,
-      };
-  
-      await axios.put(`${apiUrl}/${invoiceId}`, invoice);
-  
-      console.log('Invoice payment status updated successfully');
-      alert('Mokėjimas pakoreguotas');
+        const response = await axios.get(`${apiUrl}/${invoiceId}`);
+        const existingInvoice = response.data;
+
+        const invoice = {
+            ...existingInvoice,
+            unpaid: !isPaid,
+        };
+
+        await axios.put(`${apiUrl}/${invoiceId}`, invoice);
+
+        console.log('Invoice payment status updated successfully');
+        alert('Mokėjimas pakoreguotas');
     } catch (error) {
-      console.error('Error updating payment status:', error);
-      alert('Sąskaitos pažymėti nepavyko, bandykite dar karą');
+        console.error('Error updating payment status:', error);
+        alert('Sąskaitos pažymėti nepavyko, bandykite dar karą');
     }
-  }
+}
 
 fetchInvoices().then(() => {
     populateYearFilter();
