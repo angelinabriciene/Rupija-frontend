@@ -34,13 +34,13 @@ document.getElementById('downloadPdf').addEventListener('click', () => {
   });
 
   const finalY = doc.lastAutoTable.finalY + 10;
-    doc.setFontSize(12);
-    doc.text(`${sumText}`, 14, finalY);
-    doc.text(`${sumBeforeTaxText}`, 14, finalY + 10);
-    doc.text(`${taxText}`, 14, finalY + 20);
-    doc.text(`${sumAfterTaxText}`, 14, finalY + 30);
+  doc.setFontSize(12);
+  doc.text(`${sumText}`, 14, finalY);
+  doc.text(`${sumBeforeTaxText}`, 14, finalY + 10);
+  doc.text(`${taxText}`, 14, finalY + 20);
+  doc.text(`${sumAfterTaxText}`, 14, finalY + 30);
 
-    doc.save('invoices.pdf');
+  doc.save('invoices.pdf');
 });
 
 document.getElementById('filter').addEventListener('input', (event) => {
@@ -215,19 +215,46 @@ async function displayInvoices(invoices) {
 
       const updateButton = document.getElementById(`updateInvoice-${invoice.id}`);
       updateButton.addEventListener('click', async () => {
+        let existingEditInputRow = document.querySelector('tr[id^="inputRow-"]');
+        if (existingEditInputRow) {
+          existingEditInputRow.remove();
+        }
         const inputRow = document.createElement('tr');
         inputRow.id = `inputRow-${invoice.id}`;
         inputRow.innerHTML = `
           <td colspan="8">
-            <select id="invoiceTypeIdEdit-${invoice.id}" class="form-control"></select>
-            <input type="text" id="invoiceNumberEdit-${invoice.id}" class="form-control" value="${invoice.invoiceNumber}">
-            <input type="text" id="invoiceDateEdit-${invoice.id}" class="form-control" value="${invoice.invoiceDate}">
-            <select id="supplierIdEdit-${invoice.id}" class="form-control"></select>
-            <input type="text" id="sumBeforeTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumBeforeTax}">
-            <input type="text" id="taxEdit-${invoice.id}" class="form-control" value="${invoice.tax}">
-            <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
-            <button type="button" class="btn btn-outline-success" id="saveInvoice-${invoice.id}">Išsaugoti</button>
-          </td>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label for="invoiceType">Sąskaitos tipas</label>
+                            <select id="invoiceTypeIdEdit-${invoice.id}" class="form-control"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoiceNumber">Sąskaitos numeris</label>
+                            <input type="text" id="invoiceNumberEdit-${invoice.id}" class="form-control" value="${invoice.invoiceNumber}">
+                        </div>      
+                        <div class="form-group">
+                            <label for="invoiceDate">Sąskaitos data</label>  
+                            <input type="text" id="invoiceDateEdit-${invoice.id}" class="form-control" value="${invoice.invoiceDate}">
+                        </div> 
+                        <div class="form-group">
+                            <label for="supplier">Pasirinkite tiekėją</label>
+                            <select id="supplierIdEdit-${invoice.id}" class="form-control"></select>
+                        </div> 
+                        <div class="form-group">
+                            <label for="sumBeforeTax">Suma be PVM</label>
+                            <input type="text" id="sumBeforeTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumBeforeTax}">
+                        </div>
+                        <div class="form-group">
+                            <label for="tax">PVM</label>
+                            <input type="text" id="taxEdit-${invoice.id}" class="form-control" value="${invoice.tax}">
+                        </div>
+                        <div class="form-group">
+                            <label for="sumAfterTax">Suma su PVM</label>
+                            <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
+                        </div>
+                        <button type="button" class="btn btn-outline-success" id="saveInvoice-${invoice.id}">Išsaugoti</button>
+                    </div>
+                </td>
         `;
 
         const existingInputRow = document.getElementById(`inputRow-${invoice.id}`);
@@ -329,8 +356,16 @@ async function updateInvoice(invoiceId) {
 
   try {
     await axios.put(`${apiUrl}/${invoiceId}`, invoice);
-    fetchSupplierInvoices();
     showAlert(" Sąskaita išsaugota")
+
+    const invoices = await fetchSupplierInvoices();
+    applyFilters();
+
+    const inputRow = document.getElementById(`inputRow-${invoiceId}`);
+    if (inputRow) {
+      inputRow.remove();
+    }
+
   } catch (error) {
     console.error('Error saving invoice:', error);
   }

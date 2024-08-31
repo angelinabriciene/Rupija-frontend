@@ -77,11 +77,11 @@ label {
     margin-top: 20px;
 }
 
-.invoice-row .form-group {
+/* .invoice-row .form-group {
     display: inline-block;
     width: 150px;
     margin-right: 10px;
-}
+} */
 
 #total {
     font-weight: bold;
@@ -105,4 +105,27 @@ label {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.form-container {
+    background-color: #d3d0d0;
+    color: #3b3b3b;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    width: 125%;
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+
+.form-group {
+    flex: 1 1 calc(33.33% - 10px);
+    min-width: 150px;
+}
+
+.btn {
+    flex: 0 1 auto;
+    align-self: flex-start;
+    margin-top: 34px;
 }

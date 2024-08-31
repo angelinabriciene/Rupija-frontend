@@ -134,19 +134,46 @@ async function fetchTypeInvoices() {
 
         const updateButton = document.getElementById(`updateInvoice-${invoice.id}`);
         updateButton.addEventListener('click', async () => {
+          let existingEditInputRow = document.querySelector('tr[id^="inputRow-"]');
+          if (existingEditInputRow) {
+            existingEditInputRow.remove();
+          }
           const inputRow = document.createElement('tr');
           inputRow.id = `inputRow-${invoice.id}`;
           inputRow.innerHTML = `
                   <td colspan="8">
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label for="invoiceType">Sąskaitos tipas</label>
                             <select id="invoiceTypeIdEdit-${invoice.id}" class="form-control"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoiceNumber">Sąskaitos numeris</label>
                             <input type="text" id="invoiceNumberEdit-${invoice.id}" class="form-control" value="${invoice.invoiceNumber}">
+                        </div>      
+                        <div class="form-group">
+                            <label for="invoiceDate">Sąskaitos data</label>  
                             <input type="text" id="invoiceDateEdit-${invoice.id}" class="form-control" value="${invoice.invoiceDate}">
+                        </div> 
+                        <div class="form-group">
+                            <label for="supplier">Pasirinkite tiekėją</label>
                             <select id="supplierIdEdit-${invoice.id}" class="form-control"></select>
+                        </div> 
+                        <div class="form-group">
+                            <label for="sumBeforeTax">Suma be PVM</label>
                             <input type="text" id="sumBeforeTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumBeforeTax}">
+                        </div>
+                        <div class="form-group">
+                            <label for="tax">PVM</label>
                             <input type="text" id="taxEdit-${invoice.id}" class="form-control" value="${invoice.tax}">
+                        </div>
+                        <div class="form-group">
+                            <label for="sumAfterTax">Suma su PVM</label>
                             <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
-                            <button type="button" class="btn btn-outline-success" id="saveInvoice-${invoice.id}">Išsaugoti</button>
-                        </td>
+                        </div>
+                        <button type="button" class="btn btn-outline-success" id="saveInvoice-${invoice.id}">Išsaugoti</button>
+                    </div>
+                </td>
               `;
 
           const existingInputRow = document.getElementById(`inputRow-${invoice.id}`);
@@ -252,8 +279,14 @@ async function updateInvoice(invoiceId) {
 
   try {
     await axios.put(`${apiUrl}/${invoiceId}`, invoice);
-    fetchTypeInvoices();
     showAlert(" Sąskaita išsaugota")
+
+    const invoices = await fetchTypeInvoices();
+
+    const inputRow = document.getElementById(`inputRow-${invoiceId}`);
+    if (inputRow) {
+      inputRow.remove();
+    }
   } catch (error) {
     console.error('Error saving invoice:', error);
   }
