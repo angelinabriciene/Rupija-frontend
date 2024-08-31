@@ -100,23 +100,28 @@ async function fetchTypeInvoices() {
         const invoiceSupplierName = invoiceSupplier ? invoiceSupplier.name : 'Unknown';
 
         const invoiceRow = `
-              <tr id="invoice-row-${invoice.id}">
-                  <th scope="row">${index + 1}</th>
-                  <td>
-                    <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} 
-                        onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
-                        <span>  ${invoice.unpaid ? '-' : 'apmokėta'} </span>
-                    </td>
-                  <td>${invoice.invoiceNumber}</td>
-                  <td>${invoice.invoiceDate}</td>
-                  <td><a href="oneSupplier.html?id=${invoice.supplierId}" data-type="${invoice.id}">${invoiceSupplierName}</a></td>
-                  <td>${invoice.sumBeforeTax}</td>
-                  <td>${invoice.tax}</td>
-                  <td>${invoice.sumAfterTax}</td>
-                  <td><button id="updateInvoice-${invoice.id}" data-id="${invoice.id}">Redaguoti</button></td>
-                  <td><button id="deleteInvoice-${invoice.id}" data-id="${invoice.id}">Ištrinti</button></td>
-              </tr>
-          `;
+          <tr id="invoice-row-${invoice.id}">
+          <th scope="row">${index + 1}</th>
+          <td>
+          <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} 
+            onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+          <span>${invoice.unpaid ? '-' : 'apmokėta'}</span>
+          </td>
+          <td>${invoice.invoiceNumber}</td>
+          <td>${invoice.invoiceDate}</td>
+          <td>
+          <a href="oneSupplier.html?id=${invoice.supplierId}" data-type="${invoice.id}">
+          <span class="truncate">${invoiceSupplierName}</span>
+          </a>
+          </td>
+          <td>${invoice.sumBeforeTax}</td>
+          <td>${invoice.tax}</td>
+          <td>${invoice.sumAfterTax}</td>
+          <td><button id="updateInvoice-${invoice.id}" data-id="${invoice.id}">Redaguoti</button></td>
+          <td><button id="deleteInvoice-${invoice.id}" data-id="${invoice.id}">Ištrinti</button></td>
+        </tr>
+      `;
+
         invoiceTable.querySelector('tbody').insertAdjacentHTML('beforeend', invoiceRow);
 
         const deleteButton = document.getElementById(`deleteInvoice-${invoice.id}`);

@@ -182,22 +182,27 @@ async function displayInvoices(invoices) {
 
       const invoiceRow = `
         <tr id="invoice-row-${invoice.id}">
-          <th scope="row">${index + 1}</th>
-          <td>
-            <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} 
-              onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
-              <span>  ${invoice.unpaid ? '-' : 'apmokėta'} </span>
-          </td>
-          <td><a href="oneInvoiceType.html?id=${invoice.invoiceTypeId}" data-type="${invoice.invoiceTypeId}">${invoiceTypeName}</a></td>
-          <td>${invoice.invoiceNumber}</td>
-          <td>${invoice.invoiceDate}</td>
-          <td>${invoice.sumBeforeTax}</td>
-          <td>${invoice.tax}</td>
-          <td>${invoice.sumAfterTax}</td>
-          <td><button id="updateInvoice-${invoice.id}" data-id="${invoice.id}">Redaguoti</button></td>
-          <td><button id="deleteInvoice-${invoice.id}" data-id="${invoice.id}">Ištrinti</button></td>
-        </tr>
-      `;
+        <th scope="row">${index + 1}</th>
+        <td>
+        <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} 
+          onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+        <span>${invoice.unpaid ? '-' : 'apmokėta'}</span>
+        </td>
+        <td>
+        <a href="oneInvoiceType.html?id=${invoice.invoiceTypeId}" data-type="${invoice.invoiceTypeId}">
+        <span class="truncate">${invoiceTypeName}</span>
+        </a>
+        </td>
+        <td>${invoice.invoiceNumber}</td>
+        <td>${invoice.invoiceDate}</td>
+        <td>${invoice.sumBeforeTax}</td>
+        <td>${invoice.tax}</td>
+        <td>${invoice.sumAfterTax}</td>
+        <td><button id="updateInvoice-${invoice.id}" data-id="${invoice.id}">Redaguoti</button></td>
+        <td><button id="deleteInvoice-${invoice.id}" data-id="${invoice.id}">Ištrinti</button></td>
+      </tr>
+    `;
+
       invoiceTable.querySelector('tbody').insertAdjacentHTML('beforeend', invoiceRow);
 
       const deleteButton = document.getElementById(`deleteInvoice-${invoice.id}`);

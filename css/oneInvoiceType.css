@@ -59,3 +59,11 @@
 #totalSumAfterTax {
     font-weight: bold;
 }
+
+.truncate {
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
