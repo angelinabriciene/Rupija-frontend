@@ -174,15 +174,21 @@ async function displayInvoices(invoices) {
       totalSumBeforeTax += parseFloat(invoice.sumBeforeTax);
       totalTax += parseFloat(invoice.tax);
       totalSumAfterTax += parseFloat(invoice.sumAfterTax);
+
       const invoiceType = types.data.find(type => type.id == invoice.invoiceTypeId);
       const invoiceTypeName = invoiceType ? invoiceType.name : 'Unknown';
 
       const invoiceSupplier = suppliers.data.find(supplier => supplier.id == invoice.supplierId);
       const invoiceSupplierName = invoiceSupplier ? invoiceSupplier.name : 'Unknown';
 
+      let filename = invoice.pdfFilePath ? invoice.pdfFilePath.split('\\').pop() : 'no-file.pdf';
+            filename = filename.replace(/\(/g, '%28').replace(/\)/g, '%29');
+            const fileUrl = `http://localhost:8090/uploads/${filename}`;
+
       const invoiceRow = `
         <tr id="invoice-row-${invoice.id}">
         <th scope="row">${index + 1}</th>
+        <td><a href="${fileUrl}" target="_blank">${filename}</a></td>
         <td>
         <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} 
           onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
@@ -200,6 +206,16 @@ async function displayInvoices(invoices) {
         <td>${invoice.sumAfterTax}</td>
         <td><button id="updateInvoice-${invoice.id}" data-id="${invoice.id}">Redaguoti</button></td>
         <td><button id="deleteInvoice-${invoice.id}" data-id="${invoice.id}">Ištrinti</button></td>
+        <td>
+        <form id="uploadForm" enctype="multipart/form-data">
+        <label for="fileInput" class="custom-file-input">+
+        <input type="file" id="fileInput" name="file" accept="application/pdf">
+        </label>
+        </form>
+        </td>
+        <td>
+        <button type="button" onclick="uploadPdf(${invoice.id})">Išsaugoti</button>
+        </td>
       </tr>
     `;
 
@@ -403,6 +419,20 @@ async function updateInvoicePaymentStatus(invoiceId, isPaid) {
     console.error('Error updating payment status:', error);
     alert('Sąskaitos pažymėti nepavyko, bandykite dar karą');
   }
+}
+
+async function uploadPdf(invoiceId) {
+  const formData = new FormData();
+  const fileInput = document.getElementById('fileInput');
+  formData.append('file', fileInput.files[0]);
+
+  const response = await fetch(`http://localhost:8090/api/saskaitos/${invoiceId}/upload`, {
+      method: 'POST',
+      body: formData
+  });
+
+  const result = await response.text();
+  alert(result);
 }
 
 fetchSupplierInvoices().then(() => {

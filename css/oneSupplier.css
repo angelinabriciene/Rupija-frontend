@@ -121,3 +121,18 @@
     color: #ffffff;
     background-color: #0c51e6;
 }
+
+.custom-file-input {
+    background-color: #8d8d8d;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 30px;
+    margin-top: -1px;
+}
+
+.custom-file-input input[type="file"] {
+    display: none;
+}

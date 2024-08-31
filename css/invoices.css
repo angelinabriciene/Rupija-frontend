@@ -135,8 +135,8 @@ label {
     cursor: pointer;
     height: 30px;
     margin-top: -1px;
-  }
-  
-  .custom-file-input input[type="file"] {
+}
+
+.custom-file-input input[type="file"] {
     display: none;
-  }
+}
