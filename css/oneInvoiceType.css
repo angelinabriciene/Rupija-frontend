@@ -75,7 +75,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 10px;
-    width: 116%;
+    width: 114%;
     padding: 10px 0;
     box-sizing: border-box;
 }
@@ -95,4 +95,11 @@
 .check-box {
     margin-top: 45px;
     margin-left: 150px;
+}
+
+#downloadPdf {
+    display: inline-block;
+    margin-top: 90px;
+    color: #ffffff;
+    background-color: #0c51e6;
 }

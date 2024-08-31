@@ -12,6 +12,7 @@
 
 #filterRow {
     margin-top: 20px;
+    height: 30px;
 }
 
 .table {
@@ -24,16 +25,6 @@
     background-color: #333333;
     color: #FFFFFF;
 }
-
-/* .invoice-row {
-    background-color: #F8F9F9;
-    color: #2C3E50;
-}
-
-.invoice-row th,
-.invoice-row td {
-    border: 1px solid #D3D3D3;
-} */
 
 .row {
     background-color: #d3d0d0;
@@ -69,6 +60,11 @@
     cursor: pointer;
 }
 
+#downloadPdf {
+    color: #ffffff;
+    background-color: #0c51e6;
+}
+
 label {
     margin-top: 10px;
 }
@@ -76,12 +72,6 @@ label {
 .btn-outline-success {
     margin-top: 20px;
 }
-
-/* .invoice-row .form-group {
-    display: inline-block;
-    width: 150px;
-    margin-right: 10px;
-} */
 
 #total {
     font-weight: bold;
@@ -114,7 +104,7 @@ label {
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 10px;
-    width: 125%;
+    width: 122%;
     padding: 10px 0;
     box-sizing: border-box;
 }
