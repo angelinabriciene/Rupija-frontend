@@ -222,40 +222,49 @@ async function displayInvoices(invoices) {
         const inputRow = document.createElement('tr');
         inputRow.id = `inputRow-${invoice.id}`;
         inputRow.innerHTML = `
-          <td colspan="8">
-                    <div class="form-container">
-                        <div class="form-group">
-                            <label for="invoiceType">Sąskaitos tipas</label>
-                            <select id="invoiceTypeIdEdit-${invoice.id}" class="form-control"></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="invoiceNumber">Sąskaitos numeris</label>
-                            <input type="text" id="invoiceNumberEdit-${invoice.id}" class="form-control" value="${invoice.invoiceNumber}">
-                        </div>      
-                        <div class="form-group">
-                            <label for="invoiceDate">Sąskaitos data</label>  
-                            <input type="text" id="invoiceDateEdit-${invoice.id}" class="form-control" value="${invoice.invoiceDate}">
-                        </div> 
-                        <div class="form-group">
-                            <label for="supplier">Pasirinkite tiekėją</label>
-                            <select id="supplierIdEdit-${invoice.id}" class="form-control"></select>
-                        </div> 
-                        <div class="form-group">
-                            <label for="sumBeforeTax">Suma be PVM</label>
-                            <input type="text" id="sumBeforeTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumBeforeTax}">
-                        </div>
-                        <div class="form-group">
-                            <label for="tax">PVM</label>
-                            <input type="text" id="taxEdit-${invoice.id}" class="form-control" value="${invoice.tax}">
-                        </div>
-                        <div class="form-group">
-                            <label for="sumAfterTax">Suma su PVM</label>
-                            <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
-                        </div>
+        <tr id="inputRow-${invoice.id}">
+            <td colspan="8">
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="invoiceType">Sąskaitos tipas</label>
+                        <select id="invoiceTypeIdEdit-${invoice.id}" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceNumber">Sąskaitos numeris</label>
+                        <input type="text" id="invoiceNumberEdit-${invoice.id}" class="form-control" value="${invoice.invoiceNumber}">
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceDate">Sąskaitos data</label>
+                        <input type="text" id="invoiceDateEdit-${invoice.id}" class="form-control" value="${invoice.invoiceDate}">
+                    </div>
+                    <div class="form-group">
+                        <label for="supplier">Pasirinkite tiekėją</label>
+                        <select id="supplierIdEdit-${invoice.id}" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sumBeforeTax">Suma be PVM</label>
+                        <input type="text" id="sumBeforeTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumBeforeTax}">
+                    </div>
+                    <div class="form-group">
+                        <label for="tax">PVM</label>
+                        <input type="text" id="taxEdit-${invoice.id}" class="form-control" value="${invoice.tax}">
+                    </div>
+                    <div class="form-group">
+                        <label for="sumAfterTax">Suma su PVM</label>
+                        <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="unpaidCheckbox-${invoice.id}" class="check-box" ${invoice.unpaid ? '' : 'checked'} onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+                        <span>${invoice.unpaid ? '-' : 'apmokėta'}</span>
+                    </div>
+                    <div class="form-group">
                         <button type="button" class="btn btn-outline-success" id="saveInvoice-${invoice.id}">Išsaugoti</button>
                     </div>
-                </td>
-        `;
+                </div>
+            </td>
+        </tr>
+    `;
+    
 
         const existingInputRow = document.getElementById(`inputRow-${invoice.id}`);
         if (existingInputRow) {
@@ -335,7 +344,8 @@ async function deleteInvoice(invoiceId) {
 
 async function updateInvoice(invoiceId) {
   const apiUrl = 'http://localhost:8090/api/saskaitos';
-  const invoiceSupplierId = new URLSearchParams(window.location.search).get('id');
+  const isPaid = document.getElementById(`unpaidCheckbox-${invoiceId}`).checked;
+    const unpaid = !isPaid;
   const invoiceTypeId = document.getElementById(`invoiceTypeIdEdit-${invoiceId}`).value;
   const invoiceNumber = document.getElementById(`invoiceNumberEdit-${invoiceId}`).value;
   const invoiceDate = document.getElementById(`invoiceDateEdit-${invoiceId}`).value;
@@ -351,7 +361,8 @@ async function updateInvoice(invoiceId) {
     supplierId,
     sumBeforeTax,
     tax,
-    sumAfterTax
+    sumAfterTax,
+    unpaid
   };
 
   try {

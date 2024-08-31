@@ -171,7 +171,13 @@ async function fetchTypeInvoices() {
                             <label for="sumAfterTax">Suma su PVM</label>
                             <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
                         </div>
+                        <div class="form-group">
+                        <input type="checkbox" id="unpaidCheckbox-${invoice.id}" class="check-box" ${invoice.unpaid ? '' : 'checked'} onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+                        <span>${invoice.unpaid ? '-' : 'apmokėta'}</span>
+                        </div>
+                        <div class="form-group">
                         <button type="button" class="btn btn-outline-success" id="saveInvoice-${invoice.id}">Išsaugoti</button>
+                        </div>
                     </div>
                 </td>
               `;
@@ -258,7 +264,8 @@ async function deleteInvoice(invoiceId) {
 
 async function updateInvoice(invoiceId) {
   const apiUrl = 'http://localhost:8090/api/saskaitos';
-  const invoiceSupplierId = new URLSearchParams(window.location.search).get('id');
+  const isPaid = document.getElementById(`unpaidCheckbox-${invoiceId}`).checked;
+    const unpaid = !isPaid;
   const invoiceTypeId = document.getElementById(`invoiceTypeIdEdit-${invoiceId}`).value;
   const invoiceNumber = document.getElementById(`invoiceNumberEdit-${invoiceId}`).value;
   const invoiceDate = document.getElementById(`invoiceDateEdit-${invoiceId}`).value;
@@ -274,7 +281,8 @@ async function updateInvoice(invoiceId) {
     supplierId,
     sumBeforeTax,
     tax,
-    sumAfterTax
+    sumAfterTax,
+    unpaid
   };
 
   try {

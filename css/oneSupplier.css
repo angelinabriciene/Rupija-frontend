@@ -107,5 +107,11 @@
 .btn {
     flex: 0 1 auto;
     align-self: flex-start;
-    margin-top: 25px;
+    margin-top: 34px;
+    margin-left: 150px;
+}
+
+.check-box {
+    margin-top: 45px;
+    margin-left: 150px;
 }
