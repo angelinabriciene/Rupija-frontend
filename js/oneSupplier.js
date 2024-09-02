@@ -24,28 +24,28 @@ document.getElementById('downloadPdf').addEventListener('click', () => {
     styles: { cellPadding: 1.5, fontSize: 10 },
     margin: { top: 10 },
     columnStyles: {
-        0: { cellWidth:'auto' },
-        1: { cellWidth: 0 },
-        2: { cellWidth: 'auto' },
-        3: { cellWidth: 'auto' },  
-        4: { cellWidth: 'auto' }, 
-        5: { cellWidth: 'auto' },
-        6: { cellWidth: 'auto' },
-        7: { cellWidth: 'auto' },
-        8: { cellWidth: 'auto' },
-        9: { cellWidth: 0 },
-        10: { cellWidth: 0 },
-        11: { cellWidth: 0 },
-        12: { cellWidth: 0 },
-        13: { cellWidth: 0 },
-        14: { cellWidth: 0 },
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 0 },
+      2: { cellWidth: 'auto' },
+      3: { cellWidth: 'auto' },
+      4: { cellWidth: 'auto' },
+      5: { cellWidth: 'auto' },
+      6: { cellWidth: 'auto' },
+      7: { cellWidth: 'auto' },
+      8: { cellWidth: 'auto' },
+      9: { cellWidth: 0 },
+      10: { cellWidth: 0 },
+      11: { cellWidth: 0 },
+      12: { cellWidth: 0 },
+      13: { cellWidth: 0 },
+      14: { cellWidth: 0 },
     },
     didParseCell: function (data) {
-        if (data.column.index === 1 || data.column.index > 8) {
-            data.cell.text = '';
-        }
+      if (data.column.index === 1 || data.column.index > 8) {
+        data.cell.text = '';
+      }
     }
-});
+  });
 
   const finalY = doc.lastAutoTable.finalY + 10;
   doc.setFontSize(12);
@@ -196,8 +196,10 @@ async function displayInvoices(invoices) {
       const invoiceSupplierName = invoiceSupplier ? invoiceSupplier.name : 'Unknown';
 
       let filename = invoice.pdfFilePath ? invoice.pdfFilePath.split('\\').pop() : 'no-file.pdf';
-            filename = filename.replace(/\(/g, '%28').replace(/\)/g, '%29');
-            const fileUrl = `http://localhost:8090/uploads/${filename}`;
+      filename = filename.replace(/\(/g, '%28').replace(/\)/g, '%29');
+      const fileUrl = `http://localhost:8090/uploads/${filename}`;
+
+      const fileInputId = `fileInput-${invoice.id}`;
 
       const invoiceRow = `
         <tr id="invoice-row-${invoice.id}">
@@ -222,14 +224,15 @@ async function displayInvoices(invoices) {
         <td><button id="updateInvoice-${invoice.id}" data-id="${invoice.id}">Redaguoti</button></td>
         <td><button id="deleteInvoice-${invoice.id}" data-id="${invoice.id}">Ištrinti</button></td>
         <td>
-        <form id="uploadForm" enctype="multipart/form-data">
-        <label for="fileInput" class="custom-file-input">+
-        <input type="file" id="fileInput" name="file" accept="application/pdf">
+        <form id="uploadForm-${invoice.id}" enctype="multipart/form-data">
+        <label for="${fileInputId}" class="custom-file-input">
+        <span class="file-name">+</span>
+        <input type="file" id="${fileInputId}" name="file" accept="application/pdf" onchange="handleFileSelect(this, ${invoice.id})">
         </label>
         </form>
         </td>
         <td>
-        <button type="button" onclick="uploadPdf(${invoice.id})">Išsaugoti</button>
+        <button type="button" onclick="uploadPdf(${invoice.id}, document.getElementById('${fileInputId}'))">Išsaugoti</button>
         </td>
       </tr>
     `;
@@ -295,7 +298,6 @@ async function displayInvoices(invoices) {
             </td>
         </tr>
     `;
-    
 
         const existingInputRow = document.getElementById(`inputRow-${invoice.id}`);
         if (existingInputRow) {
@@ -376,7 +378,7 @@ async function deleteInvoice(invoiceId) {
 async function updateInvoice(invoiceId) {
   const apiUrl = 'http://localhost:8090/api/saskaitos';
   const isPaid = document.getElementById(`unpaidCheckbox-${invoiceId}`).checked;
-    const unpaid = !isPaid;
+  const unpaid = !isPaid;
   const invoiceTypeId = document.getElementById(`invoiceTypeIdEdit-${invoiceId}`).value;
   const invoiceNumber = document.getElementById(`invoiceNumberEdit-${invoiceId}`).value;
   const invoiceDate = document.getElementById(`invoiceDateEdit-${invoiceId}`).value;
@@ -430,24 +432,57 @@ async function updateInvoicePaymentStatus(invoiceId, isPaid) {
 
     console.log('Invoice payment status updated successfully');
     alert('Mokėjimas pakoreguotas');
+
+    const invoices = await fetchSupplierInvoices();
+    applyFilters();
+
   } catch (error) {
     console.error('Error updating payment status:', error);
     alert('Sąskaitos pažymėti nepavyko, bandykite dar karą');
   }
 }
 
-async function uploadPdf(invoiceId) {
+async function uploadPdf(invoiceId, fileInput) {
+  if (!fileInput || !fileInput.files[0]) {
+    console.error(`No file input found for invoice ID ${invoiceId}`);
+    return;
+  }
+
   const formData = new FormData();
-  const fileInput = document.getElementById('fileInput');
   formData.append('file', fileInput.files[0]);
 
-  const response = await fetch(`http://localhost:8090/api/saskaitos/${invoiceId}/upload`, {
+  try {
+    const response = await fetch(`http://localhost:8090/api/saskaitos/${invoiceId}/upload`, {
       method: 'POST',
       body: formData
-  });
+    });
 
-  const result = await response.text();
-  alert(result);
+    const result = await response.text();
+    alert(result);
+    const invoices = await fetchSupplierInvoices();
+    applyFilters();
+
+  } catch (error) {
+    console.error('Error during file upload:', error);
+    alert('An error occurred while uploading the file.');
+  }
+}
+
+function handleFileSelect(input, invoiceId) {
+  const file = input.files[0];
+  if (!file) {
+    console.error('No file selected.');
+    return;
+  }
+
+  const label = document.querySelector(`label[for="${input.id}"]`);
+  const fileNameSpan = label.querySelector('.file-name');
+
+  if (fileNameSpan) {
+    fileNameSpan.textContent = file.name;
+  } else {
+    console.error('Span not found for file input ID:', input.id);
+  }
 }
 
 fetchSupplierInvoices().then(() => {

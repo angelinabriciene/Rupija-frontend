@@ -183,6 +183,23 @@ async function fetchInvoices() {
     }
 }
 
+function handleFileSelect(input, invoiceId) {
+    const file = input.files[0];
+    if (!file) {
+        console.error('No file selected.');
+        return;
+    }
+
+    const label = document.querySelector(`label[for="${input.id}"]`);
+    const fileNameSpan = label.querySelector('.file-name');
+
+    if (fileNameSpan) {
+        fileNameSpan.textContent = file.name;
+    } else {
+        console.error('Span not found for file input ID:', input.id);
+    }
+}
+
 function displayInvoices(invoices) {
     const invoiceTable = document.getElementById('invoice-table2');
     invoiceTable.querySelector('tbody').innerHTML = '';
@@ -200,6 +217,8 @@ function displayInvoices(invoices) {
             let filename = invoice.pdfFilePath ? invoice.pdfFilePath.split('\\').pop() : 'no-file.pdf';
             filename = filename.replace(/\(/g, '%28').replace(/\)/g, '%29');
             const fileUrl = `http://localhost:8090/uploads/${filename}`;
+
+            const fileInputId = `fileInput-${invoice.id}`;
 
             const invoiceRow = `
                 <tr id="invoice-row-${invoice.id}" class="invoice-row">
@@ -228,25 +247,20 @@ function displayInvoices(invoices) {
                 <td><button id="updateInvoice-${invoice.id}" data-id="${invoice.id}">Redaguoti</button></td>
                 <td><button id="deleteInvoice-${invoice.id}" data-id="${invoice.id}">Ištrinti</button></td>
                 <td>
-                <form id="uploadForm" enctype="multipart/form-data">
-                <label for="fileInput" class="custom-file-input">+
-                <input type="file" id="fileInput" name="file" accept="application/pdf">
+                <form id="uploadForm-${invoice.id}" enctype="multipart/form-data">
+                <label for="${fileInputId}" class="custom-file-input">
+                <span class="file-name">+</span>
+                <input type="file" id="${fileInputId}" name="file" accept="application/pdf" onchange="handleFileSelect(this, ${invoice.id})">
                 </label>
                 </form>
                 </td>
                 <td>
-                <button type="button" onclick="uploadPdf(${invoice.id})">Išsaugoti</button>
+                <button type="button" onclick="uploadPdf(${invoice.id}, document.getElementById('${fileInputId}'))">Išsaugoti</button>
                 </td>
             </tr>
         `;
 
             invoiceTable.querySelector('tbody').insertAdjacentHTML('beforeend', invoiceRow);
-
-            const fileInput = document.getElementById('fileInput');
-            fileInput.addEventListener('change', (e) => {
-                const filename = fileInput.files[0].name;
-                fileInput.parentNode.textContent = filename;
-            });
 
             const deleteButton = document.getElementById(`deleteInvoice-${invoice.id}`);
             deleteButton.addEventListener('click', async () => {
@@ -439,24 +453,37 @@ async function updateInvoicePaymentStatus(invoiceId, isPaid) {
 
         console.log('Invoice payment status updated successfully');
         alert('Mokėjimas pakoreguotas');
+        const invoices = await fetchInvoices();
+        applyFilters();
     } catch (error) {
         console.error('Error updating payment status:', error);
         alert('Sąskaitos pažymėti nepavyko, bandykite dar karą');
     }
 }
 
-async function uploadPdf(invoiceId) {
+async function uploadPdf(invoiceId, fileInput) {
+    if (!fileInput || !fileInput.files[0]) {
+        console.error(`No file input found for invoice ID ${invoiceId}`);
+        return;
+    }
+
     const formData = new FormData();
-    const fileInput = document.getElementById('fileInput');
     formData.append('file', fileInput.files[0]);
 
-    const response = await fetch(`http://localhost:8090/api/saskaitos/${invoiceId}/upload`, {
-        method: 'POST',
-        body: formData
-    });
+    try {
+        const response = await fetch(`http://localhost:8090/api/saskaitos/${invoiceId}/upload`, {
+            method: 'POST',
+            body: formData
+        });
 
-    const result = await response.text();
-    alert(result);
+        const result = await response.text();
+        alert(result);
+        const invoices = await fetchInvoices();
+        applyFilters();
+    } catch (error) {
+        console.error('Error during file upload:', error);
+        alert('An error occurred while uploading the file.');
+    }
 }
 
 fetchInvoices().then(() => {
