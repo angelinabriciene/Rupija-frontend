@@ -60,10 +60,24 @@ document.getElementById('downloadPdf').addEventListener('click', () => {
         styles: { cellPadding: 1.5, fontSize: 10 },
         margin: { top: 10 },
         columnStyles: {
-            9: { cellWidth: 0 },
+            0: { cellWidth: 'auto' },
+            1: { cellWidth: 0 },
+            2: { cellWidth: 'auto' },
+            3: { cellWidth: 'auto' },
+            4: { cellWidth: 'auto' },
+            5: { cellWidth: 'auto' },
+            6: { cellWidth: 'auto' },
+            7: { cellWidth: 'auto' },
+            8: { cellWidth: 'auto' },
+            9: { cellWidth: 'auto' },
+            10: { cellWidth: 0 },
+            11: { cellWidth: 0 },
+            12: { cellWidth: 0 },
+            13: { cellWidth: 0 },
+            14: { cellWidth: 0 },
         },
         didParseCell: function (data) {
-            if (data.column.index === 9) {
+            if (data.column.index === 1 || data.column.index > 9) {
                 data.cell.text = '';
             }
         }
@@ -190,7 +204,8 @@ function displayInvoices(invoices) {
             const invoiceRow = `
                 <tr id="invoice-row-${invoice.id}" class="invoice-row">
                 <th scope="row">${index + 1}</th>
-                <td><a href="${fileUrl}" target="_blank">${filename}</a></td>
+                <td>${invoice.pdfFilePath ? `<a href="${fileUrl}" target="_blank"><img src="../pictures/icon.png" alt="PDF Icon" width="16" height="16"></a>` : 'No file'}
+                </td>
                 <td>
                 <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
                 <span>${invoice.unpaid ? '-' : 'apmokėta'}</span>
@@ -226,6 +241,12 @@ function displayInvoices(invoices) {
         `;
 
             invoiceTable.querySelector('tbody').insertAdjacentHTML('beforeend', invoiceRow);
+
+            const fileInput = document.getElementById('fileInput');
+            fileInput.addEventListener('change', (e) => {
+                const filename = fileInput.files[0].name;
+                fileInput.parentNode.textContent = filename;
+            });
 
             const deleteButton = document.getElementById(`deleteInvoice-${invoice.id}`);
             deleteButton.addEventListener('click', async () => {

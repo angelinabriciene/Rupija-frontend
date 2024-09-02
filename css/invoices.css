@@ -91,7 +91,7 @@ label {
 
 .truncate {
     display: inline-block;
-    max-width: 150px;
+    max-width: 130px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -134,9 +134,19 @@ label {
     border-radius: 5px;
     cursor: pointer;
     height: 30px;
+    width: 80px;
     margin-top: -1px;
 }
 
 .custom-file-input input[type="file"] {
     display: none;
+}
+
+.custom-file-input.has-file {
+    display: inline-block;
+}
+
+#uploadForm{
+    height: 30px;
+    width: 30px;
 }
