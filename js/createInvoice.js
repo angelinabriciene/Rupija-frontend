@@ -35,7 +35,6 @@ document.getElementById("submitInvoice").addEventListener("click", async functio
     }
 });
 
-
 window.onload = function () {
     populateSuppliers();
     populateTypes();
@@ -104,7 +103,6 @@ async function saveInvoice(supplierId) {
     };
 
     try {
-        console.log(invoice);
         await axios.post(apiUrl, invoice);
         window.location.href = "http://127.0.0.1:5500/views/invoices.html?info=d";
     } catch (error) {
@@ -117,29 +115,29 @@ async function addSupplier() {
     inputRow.classList.add('supplier-row');
 
     inputRow.innerHTML = `
-                    <td colspan="8">
-                        <div class="form-group">
-                        <label for="supplierName">Įmonės pavadinimas</label>
-                        <input type="text" id="supplierName" class="form-control"></div>
-                        </div>
-                        <div class="form-group">
-                        <label for="supplierCode">Įmonės kodas</label>
-                        <input type="text" id="supplierCode" class="form-control">
-                        </div>      
-                        <div class="form-group">
-                        <label for="supplierTaxCode">Įmonės PVM mokėtojo kodas</label>  
-                        <input type="text" id="supplierTaxCode" class="form-control">
-                        </div> 
-                        <div class="form-group">
-                        <label for="supplierBankAcc">Banko sąskaita</label>
-                        <input type="text" id="supplierBankAcc" class="form-control"></input>
-                        </div> 
-                        <div class="form-group">
-                        <label for="supplierAddress">Įmonės adresas</label>
-                        <input type="text" id="supplierAddress" class="form-control">
-                        </div>
-                    </td>
-                `;
+        <td colspan="8">
+            <div class="form-group">
+            <label for="supplierName">Įmonės pavadinimas</label>
+            <input type="text" id="supplierName" class="form-control"></div>
+            </div>
+            <div class="form-group">
+            <label for="supplierCode">Įmonės kodas</label>
+            <input type="text" id="supplierCode" class="form-control">
+            </div>      
+            <div class="form-group">
+            <label for="supplierTaxCode">Įmonės PVM mokėtojo kodas</label>  
+            <input type="text" id="supplierTaxCode" class="form-control">
+            </div> 
+            <div class="form-group">
+            <label for="supplierBankAcc">Banko sąskaita</label>
+            <input type="text" id="supplierBankAcc" class="form-control"></input>
+            </div> 
+            <div class="form-group">
+            <label for="supplierAddress">Įmonės adresas</label>
+            <input type="text" id="supplierAddress" class="form-control">
+            </div>
+        </td>
+    `;
 
     const existingInputRow = document.getElementById(`inputRow`);
     if (existingInputRow) {
@@ -167,15 +165,11 @@ async function saveSupplier() {
 
     try {
         const response = await axios.post(apiUrl, supplier);
-
-        console.log('Supplier save response:', response);
-
         const newSupplierId = response.data.id;
 
         if (!newSupplierId) {
             throw new Error('Failed to get new supplier ID from response');
         }
-
         return newSupplierId;
 
     } catch (error) {

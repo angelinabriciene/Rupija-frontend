@@ -312,7 +312,7 @@ function displayInvoices(invoices) {
                             <input type="text" id="sumAfterTaxEdit-${invoice.id}" class="form-control" value="${invoice.sumAfterTax}">
                         </div>
                         <div class="form-group">
-                            <input type="checkbox" id="unpaidCheckbox-${invoice.id}" class="check-box" ${invoice.unpaid ? '' : 'checked'} onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+                            <input type="checkbox" id="unpaidCheckbox-${invoice.id}" class="check-box" ${invoice.unpaid ? '' : 'checked'}>
                             <span>${invoice.unpaid ? '-' : 'apmokėta'}</span>
                         </div>
                         <div class="form-group">
@@ -431,6 +431,7 @@ async function updateInvoice(invoiceId) {
         if (inputRow) {
             inputRow.remove();
         }
+        
     } catch (error) {
         console.error('Error saving invoice:', error);
     }

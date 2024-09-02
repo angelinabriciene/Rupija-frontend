@@ -47,3 +47,8 @@ label {
 .btn-outline-success {
     margin-top: 20px;
 }
+
+.form-container {
+    background-color: #d3d0d0;
+    color: #3b3b3b;
+}

@@ -104,7 +104,7 @@ label {
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 10px;
-    width: 122%;
+    width: 153%;
     padding: 10px 0;
     box-sizing: border-box;
 }
@@ -150,7 +150,7 @@ label {
     display: inline-block;
 }
 
-#uploadForm{
+#uploadForm {
     height: 30px;
     width: 30px;
 }
