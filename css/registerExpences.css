@@ -33,13 +33,13 @@
     color: #F8F9F9;
 }
 
-#createInvoce {
+#createRegisterExpence {
     color: #F8F9F9;
     font-size: 20px;
     text-decoration: none;
 }
 
-#createInvoce:hover {
+#createRegisterExpence:hover {
     color: #0c51e6;
     cursor: pointer;
 }
@@ -54,16 +54,6 @@
     cursor: pointer;
 }
 
-#paid-filter:hover {
-    color: #0c51e6;
-    cursor: pointer;
-}
-
-#downloadPdf {
-    color: #ffffff;
-    background-color: #0c51e6;
-}
-
 label {
     margin-top: 10px;
 }
@@ -72,19 +62,7 @@ label {
     margin-top: 20px;
 }
 
-#total {
-    font-weight: bold;
-}
-
-#totalSumBeforeTax {
-    font-weight: bold;
-}
-
-#totalSumTax {
-    font-weight: bold;
-}
-
-#totalSumAfterTax {
+#totalSum {
     font-weight: bold;
 }
 

@@ -226,7 +226,7 @@ function displayInvoices(invoices) {
                 <td>${invoice.pdfFilePath ? `<a href="${fileUrl}" target="_blank"><img src="../pictures/icon.png" alt="PDF Icon" width="16" height="16"></a>` : 'No file'}
                 </td>
                 <td>
-                <input type="checkbox" ${invoice.unpaid ? '' : 'checked'} onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)">
+                <input id="paymentStatusCheckbox" type="checkbox" ${invoice.unpaid ? '' : 'checked'} onchange="updateInvoicePaymentStatus(${invoice.id}, this.checked)" style="accent-color: green;">
                 <span>${invoice.unpaid ? '-' : 'apmokėta'}</span>
                 </td>
                 <td>
