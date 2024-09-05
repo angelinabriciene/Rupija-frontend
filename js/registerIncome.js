@@ -176,15 +176,15 @@ function displayCashRegisterIncomes(cashRegisterIncomes) {
                         </div> 
                         <div class="form-group">
                             <label for="sum">Suma be PVM</label>
-                            <input type="text" id="sumEdit-${cashRegisterIncome.id}" class="form-control" value="${cashRegisterIncome.sumBeforeTax}">
+                            <input type="text" id="sumBeforeTaxEdit-${cashRegisterIncome.id}" class="form-control" value="${cashRegisterIncome.sumBeforeTax}">
                         </div>
                         <div class="form-group">
                             <label for="sum">PVM</label>
-                            <input type="text" id="sumEdit-${cashRegisterIncome.id}" class="form-control" value="${cashRegisterIncome.tax}">
+                            <input type="text" id="taxEdit-${cashRegisterIncome.id}" class="form-control" value="${cashRegisterIncome.tax}">
                         </div>
                         <div class="form-group">
                             <label for="sum">Suma su PVM</label>
-                            <input type="text" id="sumEdit-${cashRegisterIncome.id}" class="form-control" value="${cashRegisterIncome.sumAfterTax}">
+                            <input type="text" id="sumAfterTaxEdit-${cashRegisterIncome.id}" class="form-control" value="${cashRegisterIncome.sumAfterTax}">
                         </div>
                         <div class="form-group">
                         <button type="button" class="btn btn-outline-success" id="saveCashRegisterIncome-${cashRegisterIncome.id}">Išsaugoti</button>
@@ -212,6 +212,181 @@ function displayCashRegisterIncomes(cashRegisterIncomes) {
     document.getElementById('totalSumBeforeTax').querySelector('span').innerText = `${totalSumBeforeTax.toFixed(2)}`;
     document.getElementById('totalSumTax').querySelector('span').innerText = `${totalTax.toFixed(2)}`;
     document.getElementById('totalSumAfterTax').querySelector('span').innerText = `${totalSumAfterTax.toFixed(2)}`;
+}
+
+async function updateCashRegisterIncome(cashRegisterIncomeId) {
+    const apiUrl = 'http://localhost:8090/api/pajamos_grynais';
+    const cashRegisterIncomeNumber = document.getElementById(`cashRegisterIncomeNumberEdit-${cashRegisterIncomeId}`).value;
+    const cashRegisterIncomeDate = document.getElementById(`cashRegisterIncomeDateEdit-${cashRegisterIncomeId}`).value;
+    const sumBeforeTax = document.getElementById(`sumBeforeTaxEdit-${cashRegisterIncomeId}`).value;
+    const tax = document.getElementById(`taxEdit-${cashRegisterIncomeId}`).value;
+    const sumAfterTax = document.getElementById(`sumAfterTaxEdit-${cashRegisterIncomeId}`).value;
+
+    const cashRegisterIncome = {
+        cashRegisterIncomeNumber,
+        cashRegisterIncomeDate,
+        sumBeforeTax,
+        tax,
+        sumAfterTax
+    };
+
+    try {
+        await axios.put(`${apiUrl}/${cashRegisterIncomeId}`, cashRegisterIncome);
+        showAlert(" Kvitas išsaugotas")
+
+        const cashRegisterIncomes = await fetchCashRegisterIncomes();
+        applyFilters();
+
+        const inputRow = document.getElementById(`inputRow-${cashRegisterIncomeId}`);
+        if (inputRow) {
+            inputRow.remove();
+        }
+
+    } catch (error) {
+        console.error('Error saving check:', error);
+    }
+}
+
+async function createCashRegisterIncome() {
+    if (document.querySelector('.cashRegisterIncomeCreate-row')) return;
+    let existingCreateInputRow = document.querySelector('tr[id^="createInputRow-"]');
+    if (existingCreateInputRow) {
+        existingCreateInputRow.remove();
+    }
+    const createInputRow = document.createElement('tr');
+    createInputRow.classList.add('cashRegisterIncomeCreate-row');
+
+    createInputRow.innerHTML = `
+                <td colspan="8">
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label for="cashRegisterIncomeNumber">Kvito numeris</label>
+                            <input type="text" id="cashRegisterIncomeNumberCreate" class="form-control">
+                        </div>      
+                        <div class="form-group">
+                            <label for="cashRegisterIncomeDate">Kvito data</label>  
+                            <input type="text" id="cashRegisterIncomeDateCreate" class="form-control">
+                        </div> 
+                        <div class="form-group">
+                            <label for="sumBeforeTax">Suma be PVM</label>
+                            <input type="text" id="sumBeforeTaxCreate" class="form-control" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="tax">Suma</label>
+                            <input type="text" id="taxCreate" class="form-control" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="sumAfterTax">Suma</label>
+                            <input type="text" id="sumAfterTaxCreate" class="form-control" value="">
+                        </div>
+                        <div class="form-group">
+                        <button type="button" class="btn btn-outline-success" id="saveNewCashRegisterIncome">Išsaugoti</button>
+                        </div>
+                    </div>
+                </td>
+                `;
+
+    const existingInputRow = document.getElementById(`cashRegisterIncomeCreate`);
+    if (existingInputRow) {
+        existingInputRow.remove();
+    }
+
+    document.getElementById('new-register-income-table').insertAdjacentElement('afterend', createInputRow);
+
+    document.getElementById(`saveNewCashRegisterIncome`).addEventListener('click', async () => {
+        await saveCashRegisterIncome();
+        createInputRow.remove();
+    });
+}
+
+async function saveCashRegisterIncome() {
+    const apiUrl = 'http://localhost:8090/api/pajamos_grynais';
+    const cashRegisterIncomeNumber = document.getElementById(`cashRegisterIncomeNumberCreate`).value;
+    const cashRegisterIncomeDate = document.getElementById(`cashRegisterIncomeDateCreate`).value;
+    const sumBeforeTax = document.getElementById(`sumBeforeTaxCreate`).value;
+    const tax = document.getElementById(`taxCreate`).value;
+    const sumAfterTax = document.getElementById(`sumAfterTaxCreate`).value;
+
+    const cashRegisterIncome = {
+        cashRegisterIncomeNumber,
+        cashRegisterIncomeDate,
+        sumBeforeTax,
+        tax,
+        sumAfterTax
+    };
+
+    try {
+        await axios.post(apiUrl, cashRegisterIncome);
+        showAlert(" Kvitas išsaugotas")
+
+        setTimeout(async () => {
+            const cashRegisterIncomes = await fetchCashRegisterIncomes();
+            applyFilters();
+        }, 500);
+
+    } catch (error) {
+        console.error('Error saving check:', error);
+    }
+}
+
+async function deleteCashRegisterIncome(cashRegisterIncomeId) {
+    const apiUrl = 'http://localhost:8090/api/pajamos_grynais';
+    try {
+        await axios.delete(`${apiUrl}/${cashRegisterIncomeId}`);
+        showAlert(" Kvitas ištrintas")
+
+        setTimeout(async () => {
+            const cashRegisterIncomes = await fetchCashRegisterIncomes();
+            applyFilters();
+        }, 500);
+
+    } catch (error) {
+        console.error('Error deleting check:', error);
+    }
+}
+
+async function uploadPdf(cashRegisterIncomeId, fileInput) {
+    if (!fileInput || !fileInput.files[0]) {
+        console.error(`No file input found for order ID ${cashRegisterIncomeId}`);
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+
+    try {
+        const response = await fetch(`http://localhost:8090/api/pajamos_grynais/${cashRegisterIncomeId}/upload`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.text();
+        alert(result);
+
+        const cashRegisterIncomes = await fetchCashRegisterIncomes();
+        applyFilters();
+
+    } catch (error) {
+        console.error('Error during file upload:', error);
+        alert('An error occurred while uploading the file.');
+    }
+}
+
+function handleFileSelect(input, cashRegisterIncomeId) {
+    const file = input.files[0];
+    if (!file) {
+        console.error('No file selected.');
+        return;
+    }
+
+    const label = document.querySelector(`label[for="${input.id}"]`);
+    const fileNameSpan = label.querySelector('.file-name');
+
+    if (fileNameSpan) {
+        fileNameSpan.textContent = file.name;
+    } else {
+        console.error('Span not found for file input ID:', input.id);
+    }
 }
 
 fetchCashRegisterIncomes().then(() => {
