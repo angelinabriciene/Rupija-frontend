@@ -1,0 +1,128 @@
+#header {
+    font-weight: bold;
+    font-size: 50px;
+    text-align: center;
+    border-bottom: 5px solid #333333;
+}
+
+#invoiceHeaderRow {
+    margin-top: 20px;
+}
+
+#filterRow {
+    margin-top: 20px;
+    height: 30px;
+}
+
+.table {
+    margin-top: 20px;
+    background-color: #F8F9F9;
+    border: 1px solid #D3D3D3;
+}
+
+.table th {
+    background-color: #333333;
+    color: #FFFFFF;
+}
+
+.row {
+    background-color: #d3d0d0;
+}
+
+.nav-link {
+    color: #F8F9F9;
+}
+
+#createRegisterIncome {
+    color: #F8F9F9;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+#createRegisterIncome:hover {
+    color: #0c51e6;
+    cursor: pointer;
+}
+
+#year-filter:hover {
+    color: #0c51e6;
+    cursor: pointer;
+}
+
+#month-filter:hover {
+    color: #0c51e6;
+    cursor: pointer;
+}
+
+label {
+    margin-top: 10px;
+}
+
+.btn-outline-success {
+    margin-top: 20px;
+}
+
+#total {
+    font-weight: bold;
+}
+
+.truncate {
+    display: inline-block;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.form-container {
+    background-color: #d3d0d0;
+    color: #3b3b3b;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    width: 123%;
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+
+.form-group {
+    flex: 1 1 calc(33.33% - 10px);
+    min-width: 150px;
+}
+
+.btn {
+    flex: 0 1 auto;
+    align-self: flex-start;
+    margin-top: 34px;
+    margin-left: 150px;
+}
+
+.custom-file-input {
+    background-color: #8d8d8d;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 30px;
+    width: 80px;
+    margin-top: -1px;
+}
+
+.custom-file-input input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    width: 80px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.custom-file-input.has-file {
+    display: inline-block;
+}
+
+#uploadForm {
+    height: 30px;
+    width: 30px;
+}
