@@ -1,0 +1,23 @@
+#header {
+    font-weight: bold;
+    font-size: 50px;
+    text-align: center;
+    border-bottom: 5px solid #333333;
+}
+
+#invoiceHeaderRow {
+    margin-top: 20px;
+}
+
+#filterRow {
+    margin-top: 20px;
+    height: 30px;
+}
+
+.row {
+    background-color: #d3d0d0;
+}
+
+.nav-link {
+    color: #F8F9F9;
+}
